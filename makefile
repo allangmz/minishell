@@ -16,7 +16,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@$(MAKE) -C ../Libft
-			@$(GCC) $(FLAGS) $(OBJS) -lreadline -L${HOME}/.brew/opt/readline/lib ../Libft/Libft.a -o $(NAME)
+			@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME)
 			@echo "\033[1;32mCompilation complete ✅";
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/07/26 11:56:50 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/18 14:33:21 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ char	*ft_search_path(char **command_split, char **path_list)
 		i ++;
 	}
 	free(temp);
-	ft_free_doublechar(&command_split);
 	if (!path_list[i])
 	{
 		ft_free_doublechar(&path_list);
@@ -40,14 +39,12 @@ char	*ft_search_path(char **command_split, char **path_list)
 	return (path);
 }
 
-char	*ft_get_path(char *command, char *env[], char *variable)
+char	*ft_get_path(char **command_split, char *env[], char *variable)
 {
 	char	**path_list;
 	char	*path;
-	char	**command_split;
 	int		indice_path;
 
-	command_split = ft_split(command, ' ');
 	indice_path = ft_get_indice_variable(env, variable);
 	if (indice_path == -1)
 	{
@@ -58,22 +55,20 @@ char	*ft_get_path(char *command, char *env[], char *variable)
 	return (path);
 }
 
-int ft_exec_path(char *str, char *env[]) // *str = chemin ou nom de commande + option + argument
+int ft_exec_path(char **command_split, char *env[])
 {
-	char	**command_split;
 	char	*pathname;
-	pid_t	pid;
 	int		status;
+	pid_t	pid;
 
-	if (!str)
+	if (!command_split)
 	{
 		printf("commande vide\n");
 		return (-3);
 	}
-	command_split = ft_split(str, ' ');
 	if (!ft_strrchr(command_split[0],'/'))
 	{
-		pathname = ft_get_path(str, env, "PATH");
+		pathname = ft_get_path(command_split, env, "PATH");
 	}
 	else
 	{
@@ -99,6 +94,6 @@ int ft_exec_path(char *str, char *env[]) // *str = chemin ou nom de commande + o
 	{
 		wait(&status);
 	}
-	printf("ca marche bg\n");
+	free(pathname);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:24:08 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/07/26 15:16:28 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/18 15:54:09 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,7 @@ char	*ft_add_str_in_str(char *s1, char *s2, int begin)
 		i++;
 	}
 	newstr[i] = '\0';
+	free (s1);
+	// free (s2);
 	return (newstr);
 }

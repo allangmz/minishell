@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/07/26 12:01:59 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/18 17:59:56 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,25 @@
 #include <sys/types.h>
 #include "minishell.h"
 
-// int	main(int argc, char **argv, char **env)
-// {
-// 	(void) argc;
-// 	(void) argv;
-// 	while (1)
-// 	{
-// 		char *str;
-// 		str = readline("Minishel : ");
-// 		add_history(str);
-// 		ft_exec_path(str,env);
-// 	}
-// 	return (0);
-// }
+int	main(int argc, char **argv, char **env)
+{
+	(void) argc;
+	(void) argv;
+	while (1)
+	{
+		char *str;
+		char **str_split;
+		str = readline("Minishel : ");
+		add_history(str);
+		if (str)
+		{
+			str = test(str, env);
+			str_split = ft_split_minishell(str);
+			ft_exec_path(str_split, env);
+			
+			ft_free_doublechar(&str_split);
+			free(str);
+		}
+	}
+	return (0);
+}

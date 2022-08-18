@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/07/26 16:29:16 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/18 14:30:55 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,20 @@ char	*ft_add_variable(char *str, int i, int j, char *env[])
 	return (str);
 }
 
-char	*ft_expand_string_variables(char *str, char *env[])
+/*	n = number of char to browse 
+	n < 0 -> all the string
+*/
+char	*ft_expand_string_variables(char *str, char *env[], size_t begin, size_t n)
 {
 	size_t	i;
 	size_t	j;
 
-	i = 0;
-	while (str[i])
+	if (begin < 0)
+	{
+		return (str);
+	}
+	i = begin;
+	while (str[i] && i < begin + n)
 	{
 		if (str[i] == '$')
 		{
@@ -75,6 +82,10 @@ char	*ft_expand_string_variables(char *str, char *env[])
 // {
 // 	(void) argc;
 // 	(void) argv;
-// 	char *test =  "sddsdf $HOME$PATH fs";
-// 	printf ("\n\nresultat %s\n",ft_expand_string_variables(test,env));
+// 	char *test1;
+// 	char *test =  "$PATH";
+// 	test1 = ft_expand_string_variables(test, env, 0, 23);
+// 	printf ("\n\nresultat %s\n\n",test1);
+// 	// free (test1);
+// 	system("leaks minishel");
 // }
