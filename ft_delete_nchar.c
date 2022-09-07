@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:47:15 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/18 18:00:17 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/25 14:14:56 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ char	*delete_until_the_end(int newsize, char *newstr, char *str)
 
 	i = 0;
 	newstr = malloc(sizeof(char) * newsize + 1);
-	printf("*taille %d\n", newsize+1);
 	if (!newstr)
 	{
 		printf("ft_delete_nchar: malloc crash\n");
@@ -43,7 +42,6 @@ char	*delete_not_until_the_end(int newsize, char *newstr, char *str
 	i = 0;
 	j = 0;
 	newstr = malloc(sizeof(char) * newsize + 1);
-	printf("=taille %d\n", newsize + 1);
 	if (!newstr)
 	{
 		printf("ft_delete_nchar: malloc crash\n");

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/18 18:19:13 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/25 14:39:16 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 		{
 			i++;
 		}
-		compt = 0;
 		if (s[i] && s[i] == '\"')
 		{
 			i ++;
@@ -94,7 +93,6 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 		}
 		if (s[i] == '\'')
 		{
-			compt2 = 0;
 			i ++;
 			while (s[i] && s[i] != '\'')
 			{
@@ -111,6 +109,8 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 				return (NULL); // faut tout free;
 			}
 			tab[j][compt + compt2] = '\0';
+			compt = 0;
+			compt2 = 0;
 			j++;
 		}
 	}
@@ -187,14 +187,14 @@ char	**ft_split_minishell(char *s)
 			}
 			i++;
 		}
-		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ') )
+		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' '))
 		{
 			tab[index[0]][index[1]] = '\0';
 			index[0] += 1;
 			index[1] = 0;
 		}
 	}
-	tab[index[0]][index[1]] = '\0';
+	// tab[index[0]][index[1]] = '\0';
 	return (tab);
 }
 
@@ -211,9 +211,10 @@ int	ft_size_variable(char *str)
 	return (i);
 }
 
-char	*test(char *str, char *env[])
+char	*test(char *str, char *env[], int last_return)
 {
 	int		i;
+	char	*char_last_return;
 
 	i = 0;
 	while (str[i])
@@ -231,7 +232,13 @@ char	*test(char *str, char *env[])
 			{
 				if (str[i] == '$')
 				{
-					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
+					if (str[i + 1] == '?')
+					{
+						char_last_return = ft_itoa(last_return);
+						str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
+					}
+					else if (!ft_isalnum(str[i + 1]))
+						str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 				}
 				else
 					i++;
@@ -242,9 +249,15 @@ char	*test(char *str, char *env[])
 		{
 			if (str[i] == '$')
 			{
-				str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
+				if (str[i + 1] == '?')
+				{
+					char_last_return = ft_itoa(last_return);
+					str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
+				}
+				else if (ft_isalnum(str[i + 1]))
+					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 			}
-				i++;
+			i++;
 		}
 		if (str[i] && str[i] == '\'')
 		{
@@ -266,10 +279,13 @@ char	*test(char *str, char *env[])
 
 // 	(void) argv;
 // 	(void) argc;
-// 	test1 = test(test1, env);
+// 	test1 = test(test1, env, last_return);
 // 	oi = ft_split_minishell(test1);
 // 	ft_exec_path(oi, env);
 // 	ft_free_doublechar(&oi);
 // 	free(test1);
 // 	system("leaks minishel");
 // }
+
+
+// faut trouver pourquooi echo sd$HOME'test'$PATH ca marche pas c''est pas normal

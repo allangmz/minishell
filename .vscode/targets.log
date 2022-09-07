@@ -6,12 +6,10 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
 
-# Make data base, printed on Thu Aug 18 17:55:56 2022
+# Make data base, printed on Mon Sep  5 13:06:01 2022
 
 # Variables
- 
 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
@@ -26,7 +24,7 @@ VSCODE_LOG_NATIVE = false
 # automatic
 @F = $(notdir $@)
 # makefile
-CURDIR := /Users/aguemazi/code/42/minishel
+CURDIR := /Users/aguemazi/code/42/minishell
 # makefile
 SHELL = /bin/sh
 # makefile (from `makefile', line 6)
@@ -44,13 +42,13 @@ VSCODE_VERBOSE_LOGGING = true
 # makefile (from `makefile', line 2)
 OBJS = $(SRCS:.c=.o)
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n000c_vm0032px/T/vscode-ipc-2eb4b86a-d9ec-4e9b-994e-1191e78e9fad.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n000c_vm0032px/T/vscode-ipc-fff0172a-4f67-4019-b9d2-9c1d58278852.sock
 # environment
 VSCODE_CWD = /
 # environment
 PATH = /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin
 # environment
-LaunchInstanceID = CC2A8532-4A16-4158-BED1-B2DD8977C0C9
+LaunchInstanceID = 0FA8B0D1-B054-401B-B6EC-C0AC9D31ED04
 # environment
 VSCODE_LOG_STACK = false
 # environment
@@ -58,13 +56,13 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.pgkulItc6C/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.SRplztd5sE/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /Users/aguemazi/code/42/minishel
+PWD = /Users/aguemazi/code/42/minishell
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
@@ -120,7 +118,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000002.Electron
+XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000001.Electron
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -136,7 +134,7 @@ MAKEFILES :=
 # environment
 LC_ALL = C
 # environment
-SECURITYSESSIONID = 186a6
+SECURITYSESSIONID = 186a7
 # automatic
 ^F = $(notdir $^)
 # default
@@ -150,7 +148,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 6163
+VSCODE_PID = 37739
 # variable set hash-table stats:
 # Load=69/1024=7%, Rehash=0, Collisions=3/97=3%
 
@@ -160,16 +158,15 @@ VSCODE_PID = 6163
 
 # Directories
 
- 
-# . (device 16777225, inode 2053249): 25 files, no impossibilities.
+# . (device 16777225, inode 2268126): 27 files, no impossibilities.
 
-# 25 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
 %.o: %.c
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 # 1 implicit rules, 0 (0.0%) terminal.
@@ -179,25 +176,25 @@ VSCODE_PID = 6163
 ft_get_indice_variable.o: ft_get_indice_variable.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_get_indice_variable'
-#  Last modified 2022-08-17 14:12:17
+#  Last modified 2022-09-02 12:38:52
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 ft_delete_nchar.o: ft_delete_nchar.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_delete_nchar'
-#  Last modified 2022-08-18 15:52:57
+#  Last modified 2022-09-02 12:39:30
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 all: minishell
@@ -218,7 +215,7 @@ all: minishell
 # Not a target:
 main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 15:49:52
+#  Last modified 2022-09-02 13:15:39
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -227,7 +224,7 @@ main.c:
 # Not a target:
 ft_expand_string_variables.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 14:30:55
+#  Last modified 2022-08-25 14:11:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -242,19 +239,19 @@ ft_expand_string_variables.c:
 ft_expand_string_variables.o: ft_expand_string_variables.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_expand_string_variables'
-#  Last modified 2022-08-18 14:33:49
+#  Last modified 2022-09-02 12:39:30
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-08 15:16:35
+#  Last modified 2022-08-22 14:28:54
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -271,21 +268,21 @@ ft_get_indice_variable.c:
 
 minishell: ft_path.o ft_free_double_char.o ft_get_indice_variable.o main.o ft_expand_string_variables.o ft_add_str_in_str.o ft_delete_nchar.o ft_split_minishell.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-18 15:55:10
+#  Last modified 2022-09-02 13:15:45
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 18):
 	@$(MAKE) -C ../Libft
-	@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME)
+	@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME) -g3
 	@echo "\033[1;32mCompilation complete ✅";
 	
 
 # Not a target:
 ft_delete_nchar.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 15:52:51
+#  Last modified 2022-08-25 14:14:56
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -294,13 +291,14 @@ ft_delete_nchar.c:
 ft_add_str_in_str.o: ft_add_str_in_str.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_add_str_in_str'
-#  Last modified 2022-08-18 15:55:10
+ 
+#  Last modified 2022-09-02 12:39:30
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 fclean: clean
@@ -317,25 +315,25 @@ fclean: clean
 ft_split_minishell.o: ft_split_minishell.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_split_minishell'
-#  Last modified 2022-08-18 15:49:54
+#  Last modified 2022-09-02 12:39:30
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 ft_path.o: ft_path.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_path'
-#  Last modified 2022-08-18 14:33:49
+#  Last modified 2022-09-02 12:38:52
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 # Not a target:
@@ -347,13 +345,13 @@ ft_path.o: ft_path.c
 ft_free_double_char.o: ft_free_double_char.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `ft_free_double_char'
-#  Last modified 2022-08-08 15:22:17
+#  Last modified 2022-09-02 12:38:52
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 re: fclean all
@@ -379,7 +377,7 @@ clean:
 # Not a target:
 ft_add_str_in_str.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 15:54:09
+#  Last modified 2022-08-25 14:11:37
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -388,19 +386,19 @@ ft_add_str_in_str.c:
 main.o: main.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `main'
-#  Last modified 2022-08-18 15:49:54
+#  Last modified 2022-09-02 13:15:45
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `makefile', line 15):
-	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+	@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 	
 
 # Not a target:
 ft_split_minishell.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 15:48:05
+#  Last modified 2022-08-25 14:39:16
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -409,7 +407,7 @@ ft_split_minishell.c:
 # Not a target:
 ft_path.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-18 14:33:21
+#  Last modified 2022-08-25 14:10:59
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -434,10 +432,9 @@ ft_free_double_char.c:
 
 # # of strings in strcache: 1
 # # of strcache buffers: 1
- 
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Thu Aug 18 17:55:56 2022
+# Finished Make data base on Mon Sep  5 13:06:01 2022
 
  

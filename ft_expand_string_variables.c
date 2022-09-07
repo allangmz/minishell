@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/18 14:30:55 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/25 14:11:24 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,35 @@ char	*ft_expand_string_variables(char *str, char *env[], size_t begin, size_t n)
 	}
 	return (str);
 }
+
+char	*ft_add_last_return(char *str, int i, char *char_last_return)
+{
+	str = ft_delete_nchar(str, i - 1, 2);
+	str = ft_add_str_in_str(str, char_last_return, i - 1);
+	return (str);
+}
+
+char	*ft_expand_last_return(char *str, char *char_last_return, size_t begin, size_t n)
+{
+	size_t	i;
+
+	if (begin < 0)
+	{
+		return (str);
+	}
+	i = begin;
+	while (str[i] && i < begin + n)
+	{
+		if (str[i] == '$')
+		{
+			i++;
+			str = ft_add_last_return(str, i, char_last_return);
+		}
+		else
+			i++;
+	}
+	return (str);
+}	
 
 // int main(int argc, char **argv, char *env[])
 // {

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/18 14:33:21 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/08/25 14:10:59 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int ft_exec_path(char **command_split, char *env[])
 	char	*pathname;
 	int		status;
 	pid_t	pid;
-
+	
 	if (!command_split)
 	{
 		printf("commande vide\n");

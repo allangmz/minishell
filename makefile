@@ -12,11 +12,11 @@ NAME	=	minishell
 all:		$(NAME)
 
 %.o:		%.c
-			@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS)
+			@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
 
 $(NAME):	$(OBJS)
 			@$(MAKE) -C ../Libft
-			@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME)
+			@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME) -g3
 			@echo "\033[1;32mCompilation complete ✅";
 
 clean:
