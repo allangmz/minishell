@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:52:45 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/17 14:12:11 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/09/28 17:21:10 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_get_indice_variable(char *env[], char *variable)
 
 	i = 0;
 	str = ft_strjoin(variable, "=");
-	while (env[i] && ft_strncmp(env[i], str, 5 * sizeof(char)) != 0)
+	while (env[i] && ft_strncmp(env[i], str, ft_strlen(variable)) != 0)
 	{
 		i ++;
 	}

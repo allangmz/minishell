@@ -6,13 +6,13 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/25 14:39:16 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:59:52 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	ft_nbwords_minishell(char *s)
+static int	ft_nbwords_minishell(char *s, char sep)
 {
 	size_t	i;
 	size_t	nbline;
@@ -23,7 +23,7 @@ static int	ft_nbwords_minishell(char *s)
 	nbline = 1;
 	while (s[i])
 	{
-		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ') )
+		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
 		{
 			i++;
 		}
@@ -47,9 +47,9 @@ static int	ft_nbwords_minishell(char *s)
 			}
 			i++;
 		}
-		while (!((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') && s[i] != '\"' && s[i] != '\'' && s[i])
+		while (!((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'' && s[i])
 			i++;
-		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ') )
+		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
 		{
 			nbline++;
 		}
@@ -57,7 +57,7 @@ static int	ft_nbwords_minishell(char *s)
 	return (nbline);
 }
 
-char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
+char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep)
 {
 	size_t	i;
 	size_t	j;
@@ -72,7 +72,7 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 	while (s[i] && j < nbline)
 	{
 		variable = 0;
-		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ') )
+		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
 		{
 			i++;
 		}
@@ -86,7 +86,7 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 			}
 			i++;
 		}
-		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') && s[i] != '\"' && s[i] != '\'')
+		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 		{
 			i++;
 			compt++;
@@ -101,7 +101,7 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 			}
 			i++;
 		}
-		if (compt + compt2 > 0 && ((((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ')  || !s[i]))
+		if (compt + compt2 > 0 && ((((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep)  || !s[i]))
 		{
 			tab[j] = malloc(sizeof(char) * (compt + compt2 + 1));
 			if (!tab[j])
@@ -117,12 +117,12 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline)
 	return (tab);
 }
 
-char	**ft_malloc_tab2d_minishell(char *s)
+char	**ft_malloc_tab2d_minishell(char *s, char sep)
 {
 	size_t	nbline;
 	char	**tab;
 
-	nbline = ft_nbwords_minishell(s);
+	nbline = ft_nbwords_minishell(s, sep);
 	if (s[0] == '\0' || nbline == 0)
 	{
 		tab = (char **)malloc(sizeof(char *) * 2);
@@ -135,11 +135,11 @@ char	**ft_malloc_tab2d_minishell(char *s)
 	tab[nbline] = NULL;
 	if (!tab)
 		return (0);
-	tab = ft_malloc_words_minishell(s, tab, nbline);
+	tab = ft_malloc_words_minishell(s, tab, nbline, sep);
 	return (tab);
 }
 
-char	**ft_split_minishell(char *s)
+char	**ft_split_minishell(char *s, char sep)
 {
 	size_t	i;
 	size_t	index[2];
@@ -147,7 +147,7 @@ char	**ft_split_minishell(char *s)
 
 	if (!s)
 		return (0);
-	tab = ft_malloc_tab2d_minishell(s);
+	tab = ft_malloc_tab2d_minishell(s, sep);
 	if (!tab)
 		return (0); // faut faire quelque chose (dire qu'il y a une erreur)
 	i = 0;
@@ -155,11 +155,11 @@ char	**ft_split_minishell(char *s)
 	index[1] = 0;
 	while (tab[index[0]] && s[i])
 	{
-		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' ') )
+		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
 		{
 			i++;
 		}
-		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') && s[i] != '\"' && s[i] != '\'')
+		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 		{
 			tab[index[0]][index[1]] = s[i];
 			index[1]++;
@@ -187,7 +187,7 @@ char	**ft_split_minishell(char *s)
 			}
 			i++;
 		}
-		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == ' ') || s[i] == ' '))
+		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep))
 		{
 			tab[index[0]][index[1]] = '\0';
 			index[0] += 1;
@@ -204,13 +204,14 @@ int	ft_size_variable(char *str)
 
 	i = 0;
 	i++;
-	while (str[i] && ft_isalnum(str[i]))
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 	{
 		i++;
 	}
 	return (i);
 }
 
+// traduit les variables par leur traduction
 char	*test(char *str, char *env[], int last_return)
 {
 	int		i;
@@ -237,8 +238,10 @@ char	*test(char *str, char *env[], int last_return)
 						char_last_return = ft_itoa(last_return);
 						str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 					}
-					else if (!ft_isalnum(str[i + 1]))
+					else if (ft_isalnum(str[i + 1]|| str[i + 1] == '_'))
+					{
 						str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
+					}
 				}
 				else
 					i++;
@@ -254,7 +257,7 @@ char	*test(char *str, char *env[], int last_return)
 					char_last_return = ft_itoa(last_return);
 					str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 				}
-				else if (ft_isalnum(str[i + 1]))
+				else if (ft_isalnum(str[i + 1] || str[i + 1] == '_'))
 					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 			}
 			i++;
