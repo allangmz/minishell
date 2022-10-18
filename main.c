@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/10/05 17:55:23 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/10/18 15:48:50 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,10 @@ void	ft_change_pwd(char ***env)
 	char	*buffer;
 
 	buffer = NULL;
-	i = ft_get_indice_variable((*env), "PWD");
+	i = ft_get_indice_variable((*env), "PWD"); //ajouter securiter si introuvable
+	if (i == -1)
+		return ;
 	buffer = getcwd(buffer, 255);
-	ft_change_oldpwd(env, get_variable_in_env(*env, ft_strjoin("","PWD"))); // fonctionne pas //ICI !!!!
 	free((*env)[i]);
 	(*env)[i] = malloc(sizeof(char) * (ft_strlen(buffer) + 5));
 	(*env)[i] = ft_strjoin("PWD=", buffer);
@@ -88,8 +89,9 @@ void	ft_change_oldpwd(char ***env, char *oldpwd)
 {
 	int		i;
 
-	printf("%s\n",oldpwd);
-	i = ft_get_indice_variable((*env), "OLDPWD");
+	i = ft_get_indice_variable((*env), "OLDPWD"); //ajouter securiter si introuvable
+	if (i == -1)
+		return ;
 	free((*env)[i]);
 	(*env)[i] = malloc(sizeof(char) * (ft_strlen(oldpwd) + 8));
 	(*env)[i] = ft_strjoin("OLDPWD=", oldpwd);
@@ -237,6 +239,12 @@ void	ft_unset_variable_env(char ***env, char *variable)
 	int		indice_variable;
 	char	**new_env;
 
+	if (!variable)
+	{
+		// messafe d'erreur unset: not enough argument
+		return ;
+		
+	}
 	printf("variable    %s\n", variable);
 	indice_variable = ft_get_indice_variable(*env, variable);
 	if (indice_variable == -1)
@@ -246,6 +254,30 @@ void	ft_unset_variable_env(char ***env, char *variable)
 	new_env = ft_copy_env_less_var(env, indice_variable);
 	ft_free_doublechar(env);
 	*env = new_env;
+}
+
+void	ft_echo(char	**str_split)
+{
+	int	new_line_at_end;
+	int	i;
+
+	new_line_at_end = 1;
+	i = 1;
+	if (str_split[1] && ft_strcmp(str_split[1], "-n") == 0)
+	{
+		new_line_at_end = 0;
+		i = 2;
+	}
+	while (str_split[i])
+	{
+		ft_putstr_fd(str_split[i], 1);
+		i++;
+	}
+	if (new_line_at_end)
+	{
+		ft_putchar_fd('\n', 1);
+	}
+	return ;
 }
 
 int	main(int argc, char **argv, char **env)
@@ -269,13 +301,15 @@ int	main(int argc, char **argv, char **env)
 		{
 			str = test(str, env_copy, last_return);
 			str_split = ft_split_minishell(str, ' ');
-			if (ft_strcmp(str_split[0], "pwd") == 0)
+			if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
 			{
 				buffer = getcwd(buffer, 255);
 				printf("%s\n", buffer);
 			}
 			else if (ft_strcmp(str_split[0], "cd") == 0)
 			{
+				buffer = getcwd(buffer, 255);
+				ft_change_oldpwd(&env_copy, buffer);
 				chdir(str_split[1]);
 				ft_change_pwd(&env_copy);
 			}
@@ -285,11 +319,15 @@ int	main(int argc, char **argv, char **env)
 			}
 			else if (ft_strcmp(str_split[0], "export") == 0)
 			{
-				ft_export_variable_env(&env_copy, str_split[1]);
+				ft_export_variable_env(&env_copy, str_split[1]); // verifier que la valeur est presente
 			}
 			else if (ft_strcmp(str_split[0], "unset") == 0)
 			{
 				ft_unset_variable_env(&env_copy, str_split[1]);
+			}
+			else if (ft_strcmp(str_split[0], "echo") == 0)
+			{
+				ft_echo(str_split);
 			}
 			else
 				last_return = ft_exec_path(str_split, env_copy);
@@ -299,3 +337,5 @@ int	main(int argc, char **argv, char **env)
 	}
 	return (0);
 }
+
+// rajouter des protection sur toute les fonctions + les retour pour $? de chaque fonction + verifier que tout soit free au bon moment

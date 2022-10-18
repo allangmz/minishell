@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/25 14:11:24 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/10/06 11:54:15 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	*ft_expand_string_variables(char *str, char *env[], size_t begin, size_t n)
 		{
 			i++;
 			j = 0;
-			while (str[i] && ft_isalnum(str[i]))
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 			{
 				i++;
 				j++;
