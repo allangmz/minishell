@@ -16,7 +16,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@$(MAKE) -C ../Libft
-			@$(GCC) $(FLAGS) $(OBJS) -lreadline ../Libft/Libft.a -o $(NAME) -g3
+			@$(GCC) $(FLAGS) $(OBJS) -lreadline -L/Users/tkempf-e/.brew/opt/readline/lib -I/Users/tkempf-e/.brew/opt/readline/include ../Libft/Libft.a -o $(NAME) -g3
 			@echo "\033[1;32mCompilation complete ✅";
 
 clean:
@@ -33,3 +33,4 @@ re:			fclean all
 			@echo "\033[1;32mRebuild complete 🔨"
 
 .PHONY:		all fclean clean re
+# gcc -lreadline -L/Users/tkempf-e/.brew/opt/readline/lib -I/Users/tkempf-e/.brew/opt/readline/include signals.c

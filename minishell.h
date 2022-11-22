@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/10/07 10:43:41 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/11/17 15:44:34 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int		ft_get_indice_variable(char *env[], char *variable);
 char	*test(char *str, char *env[], int last_return);
 int		ft_exec_path(char **command_split, char *env[]);
 void	ft_free_doublechar(char ***tab);
+char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep);
 char	**ft_split_minishell(char *s, char sep);
 char	*ft_add_str_in_str(char *s1, char *s2, int begin);
 char	*ft_delete_nchar(char *str, int begin, int n);

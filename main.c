@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/10/18 15:48:50 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/11/17 15:36:42 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,60 @@ void	ft_echo(char	**str_split)
 	return ;
 }
 
+void handle_signals(int signo)
+{
+	if (signo == SIGINT)//ctrl-c
+	{
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+
+	}
+	else if (signo == SIGQUIT)/* ctrl-\  */
+	{
+		rl_on_new_line();
+		rl_redisplay();
+		printf("  \b\b");
+	}
+}
+
+char **ft_split_pipe (char *str)
+{
+	char	**tab_pipe;
+	int		i;
+	int		pipe_count;
+	int		command_count;
+
+	i = 1;
+	pipe_count;
+	while (str[i])
+	{
+		if (str[i] && str[i] == '\'')
+		{
+			i++;
+			while (str[i] && str[i] == '\'')
+				i++;
+			i++;
+		}
+		if (str[i] && str[i] == '\"')
+		{
+			i++;
+			while (str[i] && str[i] == '\"')
+				i++;
+			i++;
+		}
+		if (str[i] == '|')
+		{
+			pipe_count++;
+		}
+		i++;
+	}
+	tab_pipe = malloc(sizeof(char *) * pipe_count + 1);
+	tab_pipe[pipe_count] = NULL;
+	command_count = 
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	**env_copy;
@@ -287,52 +341,102 @@ int	main(int argc, char **argv, char **env)
 	char	*str;
 	char	**str_split;
 	char	*buffer;
+	// char 	**tab_pipe;
+	int		fd[2];
+	int		pid;
+	int inputfd;
+
+	inputfd = STDIN_FILENO;
+	
+	int		i;
 
 	(void) argc;
 	(void) argv;
 	env_copy = ft_copy_env(env);
 	last_return = 0;
 	buffer = NULL;
+	signal(SIGINT, handle_signals);
+	signal(SIGQUIT, handle_signals);
 	while (1)
 	{
 		str = readline("Minishell : ");
-		add_history(str);
-		if (str)
+		if (!str)
 		{
-			str = test(str, env_copy, last_return);
-			str_split = ft_split_minishell(str, ' ');
-			if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
+			printf("exit");
+			exit(0);
+		}
+		add_history(str);
+		i = 0;
+		tab_pipe = ft_split_pipe();
+		while (tab_pipe[i])
+		{
+			
+			pipe(fd);
+			pid = fork();
+			if (pid == 0)
 			{
-				buffer = getcwd(buffer, 255);
-				printf("%s\n", buffer);
+				close(fd[0]);
+				dup2(inputfd, STDIN_FILENO);
+				close(inputfd);
+				dup2(fd[1], STDOUT_FILENO);
+					close(fd[1]);
+				if (str)
+				{	
+				
+					pipe(fd);
+					pid = fork();
+					if (pid == 0)
+					{
+						close(fd[0]);
+						dup2(inputfd, STDIN_FILENO);
+						close(inputfd);
+						dup2(fd[1], STDOUT_FILENO);
+						close(fd[1]);
+						str = test(str, env_copy, last_return); // renomme les variable selon "" ''
+						str_split = ft_split_minishell(str, ' '); // split les espace selon les "" ''
+						if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
+						{
+							buffer = getcwd(buffer, 255);
+							printf("%s\n", buffer);
+						}
+						else if (ft_strcmp(str_split[0], "cd") == 0)
+						{
+							buffer = getcwd(buffer, 255);
+							ft_change_oldpwd(&env_copy, buffer);
+							chdir(str_split[1]);
+							ft_change_pwd(&env_copy);// valeur de retour last_return
+						}
+						else if (ft_strcmp(str_split[0], "env") == 0)
+						{
+							ft_print_env(env_copy);// valeur de retour last_return
+						}
+						else if (ft_strcmp(str_split[0], "export") == 0)
+						{
+							ft_export_variable_env(&env_copy, str_split[1]); // verifier que la valeur est presente
+						}
+						else if (ft_strcmp(str_split[0], "unset") == 0)
+						{
+							ft_unset_variable_env(&env_copy, str_split[1]);// valeur de retour last_return
+						}
+						else if (ft_strcmp(str_split[0], "echo") == 0)
+						{
+							ft_echo(str_split); // valeur de retour last_return
+						}
+						else
+							last_return = ft_exec_path(str_split, env_copy);
+						ft_free_doublechar(&str_split);
+						free(str);
+					}
+					close(fd[1]);
+					waitpid(pid, 0, 0);
+					inputfd =fd[0];
+				}
+					
 			}
-			else if (ft_strcmp(str_split[0], "cd") == 0)
-			{
-				buffer = getcwd(buffer, 255);
-				ft_change_oldpwd(&env_copy, buffer);
-				chdir(str_split[1]);
-				ft_change_pwd(&env_copy);
-			}
-			else if (ft_strcmp(str_split[0], "env") == 0)
-			{
-				ft_print_env(env_copy);
-			}
-			else if (ft_strcmp(str_split[0], "export") == 0)
-			{
-				ft_export_variable_env(&env_copy, str_split[1]); // verifier que la valeur est presente
-			}
-			else if (ft_strcmp(str_split[0], "unset") == 0)
-			{
-				ft_unset_variable_env(&env_copy, str_split[1]);
-			}
-			else if (ft_strcmp(str_split[0], "echo") == 0)
-			{
-				ft_echo(str_split);
-			}
-			else
-				last_return = ft_exec_path(str_split, env_copy);
-			ft_free_doublechar(&str_split);
-			free(str);
+			close(fd[1]);
+			waitpid(pid, 0, 0);
+			return (fd[0]);
+			i++;
 		}
 	}
 	return (0);
