@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/11/17 15:36:42 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/11/23 18:42:24 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,11 +302,13 @@ char **ft_split_pipe (char *str)
 {
 	char	**tab_pipe;
 	int		i;
+	int		j;
 	int		pipe_count;
 	int		command_count;
 
+	fprintf(stderr,"str %s\n", str);
 	i = 1;
-	pipe_count;
+	pipe_count = 0; // fonction qui compte le nombre de pipe
 	while (str[i])
 	{
 		if (str[i] && str[i] == '\'')
@@ -330,8 +332,90 @@ char **ft_split_pipe (char *str)
 		i++;
 	}
 	tab_pipe = malloc(sizeof(char *) * pipe_count + 1);
+	fprintf(stderr,"pipe count %d\n", pipe_count);
 	tab_pipe[pipe_count] = NULL;
-	command_count = 
+	command_count = 0;// fonction nombre de caractere d'une commande entre pipe
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		command_count = 0;
+		if (str[i] && str[i] == '\'')
+		{
+			command_count++;
+			i++;
+			while (str[i] && str[i] == '\'')
+			{
+				i++;
+				command_count++;
+			}
+			i++;
+			command_count++;
+		}
+		if (str[i] && str[i] == '\"')
+		{
+			i++;
+			command_count++;
+			while (str[i] && str[i] == '\"')
+				{
+					i++;
+					command_count++;
+				}
+			i++;
+			command_count++;
+		}
+		if (str[i] == '|')
+		{
+			tab_pipe[j] = malloc(sizeof(char *) * command_count + 1);
+			tab_pipe[j][command_count] = '\0';
+			i++;
+			j++;
+		}
+		i++;
+	}
+	//fonction qui recopie
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		command_count = 0;
+		if (str[i] && str[i] == '\'')
+		{
+			tab_pipe[j][command_count] = str[i];
+			command_count++;
+			i++;
+			while (str[i] && str[i] == '\'')
+			{
+				tab_pipe[j][command_count] = str[i];
+				i++;
+				command_count++;
+			}
+			tab_pipe[j][command_count] = str[i];
+			i++;
+			command_count++;
+		}
+		if (str[i] && str[i] == '\"')
+		{
+			tab_pipe[j][command_count] = str[i];
+			i++;
+			command_count++;
+			while (str[i] && str[i] == '\"')
+				{
+					tab_pipe[j][command_count] = str[i];
+					i++;
+					command_count++;
+				}
+			i++;
+			command_count++;
+		}
+		if (str[i] == '|')
+		{
+			i++;
+			j++;
+		}
+		i++;
+	}
+	return (tab_pipe);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -340,6 +424,7 @@ int	main(int argc, char **argv, char **env)
 	int		last_return;
 	char	*str;
 	char	**str_split;
+	char	**tab_pipe;
 	char	*buffer;
 	// char 	**tab_pipe;
 	int		fd[2];
@@ -367,7 +452,8 @@ int	main(int argc, char **argv, char **env)
 		}
 		add_history(str);
 		i = 0;
-		tab_pipe = ft_split_pipe();
+		tab_pipe = ft_split_pipe(str);
+		fprintf(stderr,"tab_pipe   %s\n", tab_pipe[0]);
 		while (tab_pipe[i])
 		{
 			
@@ -393,7 +479,7 @@ int	main(int argc, char **argv, char **env)
 						dup2(fd[1], STDOUT_FILENO);
 						close(fd[1]);
 						str = test(str, env_copy, last_return); // renomme les variable selon "" ''
-						str_split = ft_split_minishell(str, ' '); // split les espace selon les "" ''
+						str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
 						if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
 						{
 							buffer = getcwd(buffer, 255);
@@ -435,9 +521,10 @@ int	main(int argc, char **argv, char **env)
 			}
 			close(fd[1]);
 			waitpid(pid, 0, 0);
-			return (fd[0]);
+			// return (fd[0]);
 			i++;
 		}
+		// fprintf(stderr,"i   %d", i);
 	}
 	return (0);
 }
