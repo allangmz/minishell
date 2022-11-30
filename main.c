@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/11/23 18:42:24 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/11/29 20:38:58 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,6 @@ void	ft_unset_variable_env(char ***env, char *variable)
 	{
 		// messafe d'erreur unset: not enough argument
 		return ;
-		
 	}
 	printf("variable    %s\n", variable);
 	indice_variable = ft_get_indice_variable(*env, variable);
@@ -286,9 +285,8 @@ void handle_signals(int signo)
 	{
 		printf("\n");
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		// rl_replace_line("", 0); // je sais pas comment le faire fonctionner faut demander a theo skuuuuuuuuuuuuuu
 		rl_redisplay();
-
 	}
 	else if (signo == SIGQUIT)/* ctrl-\  */
 	{
@@ -306,9 +304,8 @@ char **ft_split_pipe (char *str)
 	int		pipe_count;
 	int		command_count;
 
-	fprintf(stderr,"str %s\n", str);
 	i = 1;
-	pipe_count = 0; // fonction qui compte le nombre de pipe
+	pipe_count = 1; // fonction qui compte le nombre de pipe
 	while (str[i])
 	{
 		if (str[i] && str[i] == '\'')
@@ -325,21 +322,20 @@ char **ft_split_pipe (char *str)
 				i++;
 			i++;
 		}
-		if (str[i] == '|')
+		if (str[i] && str[i] == '|')
 		{
 			pipe_count++;
 		}
 		i++;
 	}
+	// fprintf(stderr,"pipe count %d\n", pipe_count);
 	tab_pipe = malloc(sizeof(char *) * pipe_count + 1);
-	fprintf(stderr,"pipe count %d\n", pipe_count);
 	tab_pipe[pipe_count] = NULL;
 	command_count = 0;// fonction nombre de caractere d'une commande entre pipe
 	i = 0;
 	j = 0;
 	while (str[i])
 	{
-		command_count = 0;
 		if (str[i] && str[i] == '\'')
 		{
 			command_count++;
@@ -357,28 +353,37 @@ char **ft_split_pipe (char *str)
 			i++;
 			command_count++;
 			while (str[i] && str[i] == '\"')
-				{
-					i++;
-					command_count++;
-				}
+			{
+				i++;
+				command_count++;
+			}
 			i++;
 			command_count++;
 		}
-		if (str[i] == '|')
+		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
+		{
+			i++;
+			command_count++;
+		}
+		if (str[i] && str[i] == '|')
 		{
 			tab_pipe[j] = malloc(sizeof(char *) * command_count + 1);
 			tab_pipe[j][command_count] = '\0';
+			// fprintf(stderr,"command count %d\n", command_count);
 			i++;
 			j++;
+			command_count = 0;
 		}
-		i++;
+		// fprintf(stderr,"command count oui %d\n", command_count);
 	}
+	tab_pipe[j] = malloc(sizeof(char *) * command_count + 1);
+	tab_pipe[j][command_count] = '\0';
 	//fonction qui recopie
 	i = 0;
 	j = 0;
+	command_count = 0;
 	while (str[i])
 	{
-		command_count = 0;
 		if (str[i] && str[i] == '\'')
 		{
 			tab_pipe[j][command_count] = str[i];
@@ -400,20 +405,27 @@ char **ft_split_pipe (char *str)
 			i++;
 			command_count++;
 			while (str[i] && str[i] == '\"')
-				{
-					tab_pipe[j][command_count] = str[i];
-					i++;
-					command_count++;
-				}
+			{
+				tab_pipe[j][command_count] = str[i];
+				i++;
+				command_count++;
+			}
+			tab_pipe[j][command_count] = str[i];
 			i++;
 			command_count++;
 		}
-		if (str[i] == '|')
+		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
+		{
+			tab_pipe[j][command_count] = str[i];
+			i++;
+			command_count++;
+		}
+		if (str[i] && str[i] == '|')
 		{
 			i++;
 			j++;
+			command_count = 0;
 		}
-		i++;
 	}
 	return (tab_pipe);
 }
@@ -426,7 +438,6 @@ int	main(int argc, char **argv, char **env)
 	char	**str_split;
 	char	**tab_pipe;
 	char	*buffer;
-	// char 	**tab_pipe;
 	int		fd[2];
 	int		pid;
 	int inputfd;
@@ -453,10 +464,9 @@ int	main(int argc, char **argv, char **env)
 		add_history(str);
 		i = 0;
 		tab_pipe = ft_split_pipe(str);
-		fprintf(stderr,"tab_pipe   %s\n", tab_pipe[0]);
+		free(str);
 		while (tab_pipe[i])
 		{
-			
 			pipe(fd);
 			pid = fork();
 			if (pid == 0)
@@ -465,10 +475,9 @@ int	main(int argc, char **argv, char **env)
 				dup2(inputfd, STDIN_FILENO);
 				close(inputfd);
 				dup2(fd[1], STDOUT_FILENO);
-					close(fd[1]);
-				if (str)
-				{	
-				
+				close(fd[1]);
+				if (tab_pipe[i])
+				{
 					pipe(fd);
 					pid = fork();
 					if (pid == 0)
@@ -478,7 +487,7 @@ int	main(int argc, char **argv, char **env)
 						close(inputfd);
 						dup2(fd[1], STDOUT_FILENO);
 						close(fd[1]);
-						str = test(str, env_copy, last_return); // renomme les variable selon "" ''
+						tab_pipe[i] = test(tab_pipe[i], env_copy, last_return); // renomme les variable selon "" ''
 						str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
 						if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
 						{
@@ -507,21 +516,20 @@ int	main(int argc, char **argv, char **env)
 						else if (ft_strcmp(str_split[0], "echo") == 0)
 						{
 							ft_echo(str_split); // valeur de retour last_return
+							// fprintf(stderr,"salkut\n");
 						}
 						else
 							last_return = ft_exec_path(str_split, env_copy);
 						ft_free_doublechar(&str_split);
-						free(str);
 					}
 					close(fd[1]);
 					waitpid(pid, 0, 0);
-					inputfd =fd[0];
+					inputfd = fd[0];
 				}
 					
 			}
 			close(fd[1]);
 			waitpid(pid, 0, 0);
-			// return (fd[0]);
 			i++;
 		}
 		// fprintf(stderr,"i   %d", i);
