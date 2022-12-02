@@ -35,3 +35,11 @@
 //     sighandler_t signal(int signum, sighandler_t handler)
 //     return EXIT_SUCCESS;
 // }
+#include <stdio.h>
+int main()
+{
+	float i = 3.3;
+	float j = 3.7;
+
+		printf(" %d %d\n", (int) i, (int) j);
+}

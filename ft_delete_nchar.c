@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:47:15 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/08/25 14:14:56 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/01 15:30:58 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ char	*delete_not_until_the_end(int newsize, char *newstr, char *str
 char	*ft_delete_nchar(char *str, int begin, int n)
 {
 	int		size;
-	int		newsize;
 	char	*newstr;
 	int		limit[2];
 
@@ -86,13 +85,11 @@ char	*ft_delete_nchar(char *str, int begin, int n)
 	size = ft_strlen(str);
 	if (size < limit[1])
 	{
-		newsize = size - (size - begin);
-		newstr = delete_until_the_end(newsize, newstr, str);
+		newstr = delete_until_the_end(size - (size - begin), newstr, str);
 	}
 	else
 	{
-		newsize = size - n;
-		newstr = delete_not_until_the_end(newsize, newstr, str, limit);
+		newstr = delete_not_until_the_end(size - n, newstr, str, limit);
 	}
 	free(str);
 	return (newstr);

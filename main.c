@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/11/29 20:38:58 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:42:12 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,138 +296,221 @@ void handle_signals(int signo)
 	}
 }
 
+int ft_count_pipe(char *str)
+{
+	int	pipe_count;
+	int	i;
+
+	i = 0;
+	pipe_count = 1;
+	while (str[i])
+	{
+		if (str[i] && str[i] == '\'')
+		{
+			i++;
+			while (str[i] && str[i] == '\'')
+				i++;
+			i++;
+		}
+		if (str[i] && str[i] == '\"')
+		{
+			i++;
+			while (str[i] && str[i] == '\"')
+				i++;
+			i++;
+		}
+		if (str[i] && str[i] == '|')
+			pipe_count++;
+		i++;
+	}
+	return (pipe_count);
+}
+
+void ft_gestion_quote_count(char *str, int *i, int *command_count)
+{
+	if (str[*i] && str[*i] == '\'')
+	{
+		*command_count += 1;
+		*i += 1;
+		while (str[*i] && str[*i] == '\'')
+		{
+			*i += 1;
+			*command_count += 1;
+		}
+		*command_count += 1;
+	}
+	if (str[*i] && str[*i] == '\"')
+	{
+		*i += 1;
+		*command_count += 1;
+		while (str[*i] && str[*i] == '\"')
+		{
+			*i += 1;
+			*command_count += 1;
+		}
+		*command_count += 1;
+	}
+}
+
+void	ft_malloc_command(char ***tab_pipe, char *str)
+{
+	int	i;
+	int	j;
+	int	command_count;
+
+	command_count = 0;
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		ft_gestion_quote_count(str, &i, &command_count);
+		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
+		{
+			i++;
+			command_count++;
+		}
+		if (str[i] && str[i] == '|')
+		{
+			(*tab_pipe)[j] = malloc(sizeof(char *) * command_count + 1);
+			(*tab_pipe)[j++][command_count] = '\0';
+			i++;
+			command_count = 0;
+		}
+	}
+	(*tab_pipe)[j] = malloc(sizeof(char *) * command_count + 1);
+	(*tab_pipe)[j][command_count] = '\0';
+}
+
+void ft_copy_gestion_pipe(char *str, char ***tab_pipe, int *command_count, int (*i)[2], char quote)
+{
+	if (str[(*i)[0]] && str[(*i)[0]] == quote)
+	{
+		(*tab_pipe)[(*i)[1]][*command_count] = str[(*i)[0]];
+		command_count += 1;
+		(*i)[0] += 1;
+		while (str[(*i)[0]] && str[*i[0]] == quote)
+		{
+			(*tab_pipe)[(*i)[1]][*command_count] = str[(*i)[0]];
+			(*i)[0] += 1;
+			*command_count += 1;
+		}
+		(*tab_pipe)[(*i)[1]][*command_count] = str[(*i)[0]];
+		(*i)[0] += 1;
+		*command_count += 1;
+	}
+}
+
+void	ft_copy_command(char ***tab_pipe, char *str)
+{
+	int		indice[2];
+	int		command_count;
+
+	indice[0] = 0;
+	indice[1] = 0;
+	command_count = 0;
+	while (str[indice[0]])
+	{
+		ft_copy_gestion_pipe(str, tab_pipe, &command_count, &indice, '\'');
+		ft_copy_gestion_pipe(str, tab_pipe, &command_count, &indice, '\"');
+		if (str[indice[0]] && str[indice[0]] != '\'' && str[indice[0]] != '\"' && str[indice[0]] != '|')
+		{
+			(*tab_pipe)[indice[1]][command_count] = str[indice[0]];
+			indice[0]++;
+			command_count++;
+		}
+		if (str[indice[0]] && str[indice[0]] == '|')
+		{
+			indice[0]++;
+			indice[1]++;
+			command_count = 0;
+		}
+	}
+}
+
 char **ft_split_pipe (char *str)
 {
 	char	**tab_pipe;
-	int		i;
-	int		j;
 	int		pipe_count;
-	int		command_count;
 
-	i = 1;
-	pipe_count = 1; // fonction qui compte le nombre de pipe
-	while (str[i])
-	{
-		if (str[i] && str[i] == '\'')
-		{
-			i++;
-			while (str[i] && str[i] == '\'')
-				i++;
-			i++;
-		}
-		if (str[i] && str[i] == '\"')
-		{
-			i++;
-			while (str[i] && str[i] == '\"')
-				i++;
-			i++;
-		}
-		if (str[i] && str[i] == '|')
-		{
-			pipe_count++;
-		}
-		i++;
-	}
-	// fprintf(stderr,"pipe count %d\n", pipe_count);
+	pipe_count = ft_count_pipe(str);
 	tab_pipe = malloc(sizeof(char *) * pipe_count + 1);
 	tab_pipe[pipe_count] = NULL;
-	command_count = 0;// fonction nombre de caractere d'une commande entre pipe
-	i = 0;
-	j = 0;
-	while (str[i])
-	{
-		if (str[i] && str[i] == '\'')
-		{
-			command_count++;
-			i++;
-			while (str[i] && str[i] == '\'')
-			{
-				i++;
-				command_count++;
-			}
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] == '\"')
-		{
-			i++;
-			command_count++;
-			while (str[i] && str[i] == '\"')
-			{
-				i++;
-				command_count++;
-			}
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
-		{
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] == '|')
-		{
-			tab_pipe[j] = malloc(sizeof(char *) * command_count + 1);
-			tab_pipe[j][command_count] = '\0';
-			// fprintf(stderr,"command count %d\n", command_count);
-			i++;
-			j++;
-			command_count = 0;
-		}
-		// fprintf(stderr,"command count oui %d\n", command_count);
-	}
-	tab_pipe[j] = malloc(sizeof(char *) * command_count + 1);
-	tab_pipe[j][command_count] = '\0';
-	//fonction qui recopie
-	i = 0;
-	j = 0;
-	command_count = 0;
-	while (str[i])
-	{
-		if (str[i] && str[i] == '\'')
-		{
-			tab_pipe[j][command_count] = str[i];
-			command_count++;
-			i++;
-			while (str[i] && str[i] == '\'')
-			{
-				tab_pipe[j][command_count] = str[i];
-				i++;
-				command_count++;
-			}
-			tab_pipe[j][command_count] = str[i];
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] == '\"')
-		{
-			tab_pipe[j][command_count] = str[i];
-			i++;
-			command_count++;
-			while (str[i] && str[i] == '\"')
-			{
-				tab_pipe[j][command_count] = str[i];
-				i++;
-				command_count++;
-			}
-			tab_pipe[j][command_count] = str[i];
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
-		{
-			tab_pipe[j][command_count] = str[i];
-			i++;
-			command_count++;
-		}
-		if (str[i] && str[i] == '|')
-		{
-			i++;
-			j++;
-			command_count = 0;
-		}
-	}
+	ft_malloc_command(&tab_pipe, str);
+	ft_copy_command(&tab_pipe, str);
 	return (tab_pipe);
+}
+
+int exec_command(char **cmd, char **env_copy)
+{
+	char	*buffer;
+	int		last_return;
+
+	last_return = 0;
+	buffer = NULL;
+	if (ft_strcmp(cmd[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
+	{
+		buffer = getcwd(buffer, 255);
+		printf("%s\n", buffer);
+	}
+	else if (ft_strcmp(cmd[0], "cd") == 0)
+	{
+		buffer = getcwd(buffer, 255);
+		ft_change_oldpwd(&env_copy, buffer);
+		chdir(cmd[1]);
+		ft_change_pwd(&env_copy);// valeur de retour last_return
+	}
+	else if (ft_strcmp(cmd[0], "env") == 0)
+	{
+		ft_print_env(env_copy);// valeur de retour last_return
+	}
+	else if (ft_strcmp(cmd[0], "export") == 0)
+	{
+		ft_export_variable_env(&env_copy, cmd[1]); // verifier que la valeur est presente
+	}
+	else if (ft_strcmp(cmd[0], "unset") == 0)
+	{
+		ft_unset_variable_env(&env_copy, cmd[1]);// valeur de retour last_return
+	}
+	else if (ft_strcmp(cmd[0], "echo") == 0)	
+	{
+		ft_echo(cmd); // valeur de retour last_return
+		// fprintf(stderr,"salkut\n");
+	}
+	else
+		last_return = ft_exec_path(cmd, env_copy); // gerer le last return
+	return (last_return);
+}
+
+int	ft_pipe(char **cmd, int inputfd, char **env_copy)
+{
+	int		fd[2];
+	char	*buffer;
+
+
+	pipe(fd);
+	buffer = NULL;
+		close(fd[0]);
+		dup2(inputfd, STDIN_FILENO);
+		close(inputfd);
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[1]);
+		exec_command(cmd, env_copy);
+	close(fd[1]);
+	return (fd[0]);
+}
+
+int	ft_pipe_last(char **cmd, int inputfd, char **env_copy)
+{
+	int		fd[2];
+	char	*buffer;
+
+
+	buffer = NULL;
+		dup2(inputfd, STDIN_FILENO);
+		close(inputfd);
+		exec_command(cmd, env_copy);
+	close(fd[1]);
+	return (fd[0]);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -438,12 +521,7 @@ int	main(int argc, char **argv, char **env)
 	char	**str_split;
 	char	**tab_pipe;
 	char	*buffer;
-	int		fd[2];
-	int		pid;
-	int inputfd;
-
-	inputfd = STDIN_FILENO;
-	
+	int		fd;	
 	int		i;
 
 	(void) argc;
@@ -458,80 +536,26 @@ int	main(int argc, char **argv, char **env)
 		str = readline("Minishell : ");
 		if (!str)
 		{
-			printf("exit");
+			fprintf(stderr,"exit");
 			exit(0);
 		}
+		usleep(20);
 		add_history(str);
 		i = 0;
 		tab_pipe = ft_split_pipe(str);
+		fd = STDIN_FILENO;
 		free(str);
 		while (tab_pipe[i])
 		{
-			pipe(fd);
-			pid = fork();
-			if (pid == 0)
-			{
-				close(fd[0]);
-				dup2(inputfd, STDIN_FILENO);
-				close(inputfd);
-				dup2(fd[1], STDOUT_FILENO);
-				close(fd[1]);
-				if (tab_pipe[i])
-				{
-					pipe(fd);
-					pid = fork();
-					if (pid == 0)
-					{
-						close(fd[0]);
-						dup2(inputfd, STDIN_FILENO);
-						close(inputfd);
-						dup2(fd[1], STDOUT_FILENO);
-						close(fd[1]);
-						tab_pipe[i] = test(tab_pipe[i], env_copy, last_return); // renomme les variable selon "" ''
-						str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
-						if (ft_strcmp(str_split[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
-						{
-							buffer = getcwd(buffer, 255);
-							printf("%s\n", buffer);
-						}
-						else if (ft_strcmp(str_split[0], "cd") == 0)
-						{
-							buffer = getcwd(buffer, 255);
-							ft_change_oldpwd(&env_copy, buffer);
-							chdir(str_split[1]);
-							ft_change_pwd(&env_copy);// valeur de retour last_return
-						}
-						else if (ft_strcmp(str_split[0], "env") == 0)
-						{
-							ft_print_env(env_copy);// valeur de retour last_return
-						}
-						else if (ft_strcmp(str_split[0], "export") == 0)
-						{
-							ft_export_variable_env(&env_copy, str_split[1]); // verifier que la valeur est presente
-						}
-						else if (ft_strcmp(str_split[0], "unset") == 0)
-						{
-							ft_unset_variable_env(&env_copy, str_split[1]);// valeur de retour last_return
-						}
-						else if (ft_strcmp(str_split[0], "echo") == 0)
-						{
-							ft_echo(str_split); // valeur de retour last_return
-							// fprintf(stderr,"salkut\n");
-						}
-						else
-							last_return = ft_exec_path(str_split, env_copy);
-						ft_free_doublechar(&str_split);
-					}
-					close(fd[1]);
-					waitpid(pid, 0, 0);
-					inputfd = fd[0];
-				}
-					
-			}
-			close(fd[1]);
-			waitpid(pid, 0, 0);
+			tab_pipe[i] = test(tab_pipe[i], env_copy, last_return); // renomme les variable selon "" ''
+			str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
+			if (tab_pipe[i + 1])
+				fd = ft_pipe(str_split, fd, env_copy);
+			else
+				ft_pipe_last(str_split, fd, env_copy);
 			i++;
 		}
+		ft_free_doublechar(&tab_pipe);
 		// fprintf(stderr,"i   %d", i);
 	}
 	return (0);
