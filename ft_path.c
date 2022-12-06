@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/02 16:38:37 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:31:52 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*ft_get_path(char **command_split, char *env[], char *variable)
 int ft_exec_path(char **command_split, char *env[])
 {
 	char	*pathname;
-	int		status;
+	// int		status;
 	pid_t	pid;
 	
 	if (!command_split)
@@ -90,10 +90,8 @@ int ft_exec_path(char **command_split, char *env[])
 	{
 		execve(pathname, command_split, env);
 	}
-	else
-	{
-		wait(&status);
-	}
+    wait(0);
+	waitpid(-1, 0, 0);
 	free(pathname);
 	return (0);
 }

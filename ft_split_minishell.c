@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/10/06 13:25:32 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:15:52 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 		if (s[i] && s[i] == '\"')
 		{
 			i++;
-			while (s[i] != '\"')
+			while (s[i] && s[i] != '\"')
 			{
 				i++;
 			}
@@ -41,7 +41,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 		if (s[i] && s[i] == '\'')
 		{
 			i++;
-			while (s[i] != '\'')
+			while (s[i] && s[i] != '\'')
 			{
 				i++;
 			}
@@ -229,16 +229,16 @@ char	*test(char *str, char *env[], int last_return)
 		if (str[i] && str[i] == '\"')
 		{
 			i++;
-			while (str[i] != '\"')
+			while (str[i] &&str[i] != '\"')
 			{
-				if (str[i] == '$')
+				if (str[i] &&str[i] == '$')
 				{
-					if (str[i + 1] == '?')
+					if (str[i] &&str[i + 1] == '?')
 					{
 						char_last_return = ft_itoa(last_return);
 						str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 					}
-					else if (ft_isalnum(str[i + 1]) || str[i + 1] == '_')
+					else if (str[i] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
 					{
 						str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 					}
@@ -248,16 +248,16 @@ char	*test(char *str, char *env[], int last_return)
 			}
 			i++;
 		}
-		while (!((str[i] >= 9 && str[i] <= 13) || ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')) && str[i] != '\"' && str[i] != '\'' && str[i])
+		while (str[i] && !((str[i] >= 9 && str[i] <= 13) || ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')) && str[i] != '\"' && str[i] != '\'')
 		{
-			if (str[i] == '$')
+			if (str[i] &&str[i] == '$')
 			{
-				if (str[i + 1] == '?')
+				if (str[i] && str[i + 1] == '?')
 				{
 					char_last_return = ft_itoa(last_return);
 					str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 				}
-				else if (ft_isalnum(str[i + 1]) || str[i + 1] == '_')
+				else if (str[i] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
 				{	
 					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 				}
@@ -267,7 +267,7 @@ char	*test(char *str, char *env[], int last_return)
 		if (str[i] && str[i] == '\'')
 		{
 			i++;
-			while (str[i] != '\'')
+			while (str[i] && str[i] != '\'')
 			{
 				i++;
 			}
