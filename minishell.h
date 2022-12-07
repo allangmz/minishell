@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/11/17 15:44:34 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/07 11:42:57 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,17 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
+char	**ft_copy_env(char **env);
 int		ft_get_indice_variable(char *env[], char *variable);
 char	*test(char *str, char *env[], int last_return);
+void	handle_signals(int signo);
 int		ft_exec_path(char **command_split, char *env[]);
 void	ft_free_doublechar(char ***tab);
 char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep);
@@ -33,5 +41,13 @@ char	*ft_expand_string_variables(char *str, char *env[], size_t begin,
 char	*get_variable_in_env(char *env[], char *variable);
 char	*ft_expand_last_return(char *str, char *char_last_return, size_t begin,
 			size_t n);
+char	**ft_split_pipe (char *str);
+// BULTIN
+void	ft_echo(char	**str_split);
+void	ft_unset_variable_env(char ***env, char *variable);
+void	ft_export_variable_env(char ***env, char *str);
+void	ft_print_env(char **env);
+void	ft_cd(char **cmd, char ***env_copy);
+void	ft_pwd(void);
 
 #endif

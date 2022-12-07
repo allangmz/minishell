@@ -1,4 +1,9 @@
-SRCS = ft_path.c ft_free_double_char.c ft_get_indice_variable.c main.c ft_expand_string_variables.c ft_add_str_in_str.c ft_delete_nchar.c ft_split_minishell.c
+SRCS =	ft_path.c						ft_free_double_char.c	ft_get_indice_variable.c	main.c \
+ 		ft_expand_string_variables.c	ft_add_str_in_str.c		ft_delete_nchar.c \
+		ft_split_minishell.c 			signals.c  \
+		builtins/ft_echo.c				builtins/ft_unset.c		builtins/ft_export.c			builtins/ft_env.c \
+		builtins/ft_cd.c				builtins/ft_pwd.c \
+		ft_utils.c						ft_split_pipe.c
 OBJS	=	$(SRCS:.c=.o)
 
 GCC		=	gcc
@@ -12,7 +17,7 @@ NAME	=	minishell
 all:		$(NAME)
 
 %.o:		%.c
-			@$(GCC) -I. -I${HOME}/.brew/opt/readline/include -o $@ -c $? $(FLAGS) -g3
+			@$(GCC) $(FLAGS) -I. -I${HOME}/.brew/opt/readline/include -c $< -o ${<:.c=.o} -g3
 
 $(NAME):	$(OBJS)
 			@$(MAKE) -C ../Libft

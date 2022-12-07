@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/06 17:15:52 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:17:19 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 	nbline = 1;
 	while (s[i])
 	{
-		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
+		while (s[i] && (((s[i] >= 9 && s[i] <= 13)) || s[i] == sep) )
 		{
 			i++;
 		}
@@ -47,7 +47,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 			}
 			i++;
 		}
-		while (!((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'' && s[i])
+		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 			i++;
 		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
 		{
