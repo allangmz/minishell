@@ -1,229 +1,56 @@
-// #include "minishell.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-// # include "../Libft/libft.h"
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <sys/types.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
+/*   Updated: 2022/12/07 20:08:46 by tkempf-e         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "minishell.h"
 
+// #include <stdlib.h>
+// #include <unistd.h>
+// #include <errno.h>
+// #include <fcntl.h>
+// #include <stdio.h>
+// #include <signal.h>
+// #include <string.h>
+// #include <readline/readline.h>
+// #include <readline/history.h>
+// #include </Users/tkempf-e/.brew/Cellar/readline/8.2.1/include/readline/readline.h>
+// int	ft_strcmp(char *str1, char *str2)
+// {
+// 	int		i;
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int		i;
-
-	i = 0;
-	while (s[i])
-	{
-		write(fd, &(s[i]), 1);
-		i++;
-	}
-}
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*join;
-	int		i;
-	int		j;
-
-	j = 0;
-	i = 0;
-	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!join)
-		return (NULL);
-	while (s1 && s1[i])
-	{
-		join[i] = *(char *)(s1 + i);
-		i++;
-	}
-	while (s2[j])
-	{
-		join[i + j] = *(char *)(s2 + j);
-		j++;
-	}
-	join[i + j] = '\0';
-	return (join);
-}
-
-int	ft_nbwords(char const *s, char c)
-{
-	unsigned int	i;
-	unsigned int	nb_word;
-
-	if (s[0] == '\0')
-		return (0);
-	i = 0;
-	while (s[i] == c && s[i])
-		i++;
-	nb_word = 0;
-	while (s[i])
-	{
-		if (s[i] && s[i] == c && s[i - 1] != c)
-			nb_word++;
-		i++;
-	}
-	if (s[i] == '\0' && s[i - 1] != c)
-		nb_word++;
-	return (nb_word);
-}
-
-char	**ft_tab(char	**tab, char	const *s, char c, int nb_word)
-{
-	int	i;
-	int	j;
-	int	compt;
-
-	i = 0;
-	j = 0;
-	while (s[i] && j < nb_word)
-	{
-		while (s[i] == c && s[i])
-			i++;
-		compt = 0;
-		while (s[i] != c && s[i++])
-			compt ++;
-		if (s[i - 1] != c)
-		{
-			tab[j] = malloc(sizeof(char) * (compt + 1));
-			if (!tab)
-				return (0);
-			tab[j][compt] = '\0';
-		}
-		j++;
-	}
-	return (tab);
-}
-
-char	**ft_malloc_tab2d(char const *s, char c)
-{
-	size_t			nb_word;
-	char			**tab;
-
-	nb_word = ft_nbwords(s, c);
-	if (s[0] == '\0' && nb_word == 0)
-	{
-		tab = (char **)malloc(sizeof(char *));
-		tab[0] = NULL;
-		return (tab);
-	}
-	tab = (char **)malloc(sizeof(char *) * (nb_word + 1));
-	if (!tab)
-		return (0);
-	tab[nb_word] = 0;
-	tab = ft_tab(tab, s, c, nb_word);
-	return (tab);
-}
-
-char	**ft_split(char const *s, char c)
-{
-	unsigned int	i;
-	unsigned int	index[2];
-	char			**tab;
-
-	tab = ft_malloc_tab2d(s, c);
-	if (!tab)
-		return (NULL);
-	i = 0;
-	index[0] = 0;
-	while (tab[index[0]] && s[i])
-	{
-		while (s[i] == c && s[i])
-			i++;
-		index[1] = 0;
-		while (s[i] != c && s[i])
-		{
-			tab[index[0]][index[1]] = s[i];
-			index[1]++;
-			i++;
-		}
-		index[0]++;
-	}
-	return (tab);
-}
-
-char	*ft_path_tester(char *totest, char *cmd)
-{
-	char	**tab;
-	int		i;
-
-	i = 0;
-	tab = ft_split(totest, ':');
-	while (tab && tab[i])
-	{
-		tab[i] = ft_strjoin(tab[i], ft_strjoin("/", cmd));
-		if (access(tab[i], R_OK) == 0)
-			return (tab[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*ft_env(char **envp)
-{
-	int		i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (envp[i][0] == 'P' && envp[i][1] == 'A' && envp[i][2] == 'T'
-		&& envp[i][3] == 'H')
-			return (envp[i] + 5);
-		i++;
-	}
-	return (NULL);
-}
-
-int	ft_strcmp(char *str1, char *str2)
-{
-	int		i;
-
-	if (!str1 && !str2)
-		return (0);
-	i = 0;
-	while (str1[i] && str2[i] && str1[i] == str2[i])
-		i++;
-	if (!str1[i] && !str2[i])
-		return (0);
-	else
-		return (-1);
-}
+// 	if (!str1 && !str2)
+// 		return (0);
+// 	i = 0;
+// 	while (str1[i] && str2[i] && str1[i] == str2[i])
+// 		i++;
+// 	if (!str1[i] && !str2[i])
+// 		return (0);
+// 	else
+// 		return (-1);
+// }
 
 void	enter_redirect(char *entry, char *cmd, char **envp)
 {
 	int		fdopen;
-	char	*path;
-	char	**str2;
+	char	**cmd_split;
 	int		pid;
 
-	str2 = ft_split(cmd, ' ');
+	cmd_split = ft_split_minishell(cmd, ' ');
 	fdopen = open(entry, O_RDONLY);
-	path = ft_path_tester(ft_env(envp), cmd);
 	dup2(fdopen, STDIN_FILENO);
 	close(fdopen);
 	pid = fork();
 	if (pid == 0)
-		execve(path, str2, envp);
-	free (str2);
-	free (path);
+		exec_command(cmd_split, envp);
+	ft_free_doublechar(&cmd_split);
 	waitpid(pid, 0, 0);
 }
 
@@ -234,9 +61,7 @@ void	enter_redirect(char *entry, char *cmd, char **envp)
 void	here_doc(char *cmd, char *delimiter, char **envp)
 {
 	char	*str;
-	char	*path;
 	char	*line;
-	char	**cmd_tab;
 	int		fd;
 
 	line = 0;
@@ -279,12 +104,11 @@ void	exit_redirect(char *exit, char *cmd, char **envp)
 {
 	int		fdopen;
 	int		fd[2];
-	char	**str2;
+	char	**cmd_split;
 	char	*path;
 	int		pid;
 
-	str2 = ft_split(cmd, ' ');
-	path = ft_path_tester(ft_env(envp), str2[0]);
+	cmd_split = ft_split_minishell(cmd, ' ');
 	pipe(fd);
 	pid = fork();
 	if (pid == 0)
@@ -292,27 +116,86 @@ void	exit_redirect(char *exit, char *cmd, char **envp)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		execve(path, str2, envp);
+		exec_command(cmd_split, envp);
 	}
 	close(fd[1]);
 	path = ft_fdtostr(fd[0]);
 	close(fd[0]);
 	fdopen = open(exit, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	ft_putstr_fd(path, fdopen);
+	ft_free_doublechar(&cmd_split);
 	close(fdopen);
 	waitpid(pid, 0, 0);
+}
+
+int	redirection_counter(char *str)
+{
+	int		i;
+	int		counter;
+
+	i = 0;
+	counter = 0;
+	while (str[i])
+	{
+		if (str[i] == '>')
+		{
+			counter++;
+			if (str[i + 1] && str[i + 1] == str[i])
+				i++;
+		}
+		i++;
+	}
+	return (counter);
+}
+
+char	*filer_the_creator(char *str, int redirect_nbr)
+{
+	(void) redirect_nbr; // pourquoi cette varible existe ?
+	int		i;
+	char	**no_redirect;
+	char	*file;
+
+	no_redirect = ft_split(str, '>');
+	i = 0;
+	while (no_redirect[i])// enlever les ' ' et '>' en trop
+	{
+		file = ft_strtrim(no_redirect[i], " ><");
+		free (no_redirect[i]);
+		no_redirect[i] = file;
+		i++;
+	}
+	i = 1;
+	while (no_redirect[i] && no_redirect[i + 1])
+	{
+		open(no_redirect[i], O_CREAT | O_RDWR , 0644);
+		i++;
+	}
+	return (ft_strjoin(no_redirect[0], ft_strjoin(" > ", no_redirect[i])));
+}
+
+// gerer les redirections multiples
+// return string without repetition of redirection
+char	*pre_redirect(char *str)
+{
+	char	*new_str;
+	int		redirect_nbr;
+	
+	redirect_nbr = redirection_counter(str);
+	if (redirect_nbr < 2)
+		return (str);
+	new_str = filer_the_creator(str, redirect_nbr);
+	return (new_str);
 }
 
 void	exit_append_redirect(char *exit, char *cmd, char **envp)
 {
 	int		fdopen;
 	int		fd[2];
-	char	**str2;
+	char	**cmd_split;
 	char	*path;
 	int		pid;
 
-	str2 = ft_split(cmd, ' ');
-	path = ft_path_tester(ft_env(envp), str2[0]);
+	cmd_split = ft_split_minishell(cmd, ' ');
 	pipe(fd);
 	pid = fork();
 	if (pid == 0)
@@ -320,24 +203,26 @@ void	exit_append_redirect(char *exit, char *cmd, char **envp)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		execve(path, str2, envp);
+		exec_command(cmd_split, envp);
 	}
 	close(fd[1]);
 	path = ft_fdtostr(fd[0]);
 	close(fd[0]);
 	fdopen = open(exit, O_CREAT | O_RDWR | O_APPEND, 0644);
 	ft_putstr_fd(path, fdopen);
+	ft_free_doublechar(&cmd_split);
 	close(fdopen);
 	waitpid(pid, 0, 0);
 }
+// cmd                        Stdin      envp   => fd
+// cmd2                       fd    envp =>fd2
+//  dup2()
 
 //return l'index de la 1ere redirection
 int	redirection_checker(char *str)
 {
 	int		i;
-	int		counter;
 
-	counter = 0;
 	i = 0;
 	while (str[i])
 	{
@@ -396,82 +281,61 @@ void	redirect_options(char *str, char *cmd, char *file, char **envp)
 
 char	*ft_cmd(char *str, int i, int *ptrj)
 {
+	(void) ptrj; //pourquoi il existe ?
 	char	*cmd;
+	char	**split;
 
-	cmd = malloc(sizeof(char) * i + 1);
-	cmd[i] = 0;
-	*ptrj = 1;
-	if (str[i - *ptrj] == ' ')
+	split = ft_split(str, str[i]);
+	cmd = split[0];
+	i = 1;
+	while (split[i])
 	{
-		while (str[i - *ptrj] == ' ')
-			*ptrj += 1;
-		while (i - *ptrj >= 0)
-		{
-			cmd[i - *ptrj] = str[i - *ptrj];
-			*ptrj += 1;
-		}
+		free(split[i]);
+		i++;
 	}
-	else
-	{
-		*ptrj = 0;
-		while (i > *ptrj)
-		{
-			cmd[*ptrj] = str[*ptrj];
-			*ptrj += 1;
-		}
-	}
+	free (split);
 	return (cmd);
 }
 
 char	*ft_file(char *str, int i, int *ptrj)
 {
+	(void) ptrj; //pourquoi il existe ?
 	char	*file;
-	int		j;
+	char	**split;
 
-	j = *ptrj;
-	file = malloc(sizeof(char) * (ft_strlen(str) - i));
-	j++;
-	if (str[i + 1] == str[i])
-		j++;
+	split = ft_split(str, str[i]);
+	file = ft_strtrim(split[1], " ");
 	i = 0;
-	while (str[j] == ' ')
-		j++;
-	while (str[j] && str[j] != ' ')
+	while (split[i] && split[i + 1])
 	{
-		file[i] = str[j];
+		free(split[i]);
 		i++;
-		j++;
 	}
-	*ptrj = j;
-	file[i] = 0;
+	free (split);
 	return (file);
 }
 
-char	*redirections(char *str, char **envp)
+int	redirections(char *cmd, char **envp)
 {
 	int		i;
 	int		j;
-	char	*cmd;
 	char	*file;
-	char	*ret;
+	char	*new_str;
+	char 	**cmd_split;
 
-	i = redirection_checker(str);
-	if (i == -1 || ft_test(str, i) == -1)
-		return (str);
-	cmd = ft_cmd(str, i, &j);
-	file = ft_file(str, i, &j);
-	redirect_options(str, cmd, file, envp);
-	ret = ft_strjoin(cmd, str + j);
-	free(cmd);
+	i = redirection_checker(cmd);
+	if (ft_test(cmd, i) == -1)
+		return (-1);
+	if (i == -1)
+	{
+		cmd_split = ft_split_minishell(cmd, ' ');
+		exec_command(cmd_split, envp);
+		return (0);
+	}
+	new_str = pre_redirect(cmd);
+	cmd = ft_cmd(new_str, i, &j);
+	file = ft_file(new_str, i, &j);
+	redirect_options(new_str, cmd, file, envp);
 	free(file);
-	return (ret);
-}
-
-// mettre a la norme
-int	main(int argc, char **argv, char **envp)
-{
-	char	*s;
-
-	s = redirections("echo \"manger des pates au pesto\" > test > test2", envp);
 	return (0);
 }

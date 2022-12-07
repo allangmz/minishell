@@ -3,7 +3,7 @@ SRCS =	ft_path.c						ft_free_double_char.c	ft_get_indice_variable.c	main.c \
 		ft_split_minishell.c 			signals.c  \
 		builtins/ft_echo.c				builtins/ft_unset.c		builtins/ft_export.c			builtins/ft_env.c \
 		builtins/ft_cd.c				builtins/ft_pwd.c \
-		ft_utils.c						ft_split_pipe.c
+		ft_utils.c						ft_split_pipe.c			redirection.c
 OBJS	=	$(SRCS:.c=.o)
 
 GCC		=	gcc

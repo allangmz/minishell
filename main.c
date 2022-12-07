@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 11:43:17 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/07 20:07:21 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,39 +62,32 @@ int exec_command(char **cmd, char **env_copy)
 	return (last_return);
 }
 
-int	ft_pipe(char **cmd, int inputfd, char **env_copy)
+int	ft_pipe(char *cmd, int inputfd, char **env_copy)
 {
 	int		fd[2];
 	char	*buffer;
 
 	pipe(fd);
 	buffer = NULL;
-	// close(fd[0]);
-	if (dup2(inputfd, STDIN_FILENO) == -1)
-		fprintf(stderr,"GROSSE MERDE 1 ");
+	dup2(inputfd, STDIN_FILENO);
 	close(inputfd);
-	if (dup2(fd[1], STDOUT_FILENO) == -1)
-		fprintf(stderr,"GROSSE MERDE 2");
-	if (exec_command(cmd, env_copy) != 0)
-	{
-		fprintf(stderr,"GROSSE MERDE 3");
-		return (-1);
-	}
+	dup2(fd[1], STDOUT_FILENO);
+	if(redirections(cmd, env_copy) ==-1)
+		return -4; // je sais pas quoi retourner
 	close(fd[1]);
 	return (fd[0]);
 }
 
-int	ft_pipe_last(char **cmd, int inputfd, char **env_copy)
+int	ft_pipe_last(char *cmd, int inputfd, char **env_copy)
 {
 	int		fd[2];
 	char	*buffer;
-
 
 	buffer = NULL;
 	close(fd[1]);
 	close(fd[0]);
 	dup2(inputfd, STDIN_FILENO);
-	exec_command(cmd, env_copy);
+	redirections(cmd, env_copy); 
 	return (0);
 }
 
@@ -117,7 +110,6 @@ int	main(int argc, char **argv, char **env)
 	char	**env_copy;
 	int		last_return;
 	char	*str;
-	char	**str_split;
 	char	**tab_pipe;
 	char	*buffer;
 	int		fd;	
@@ -152,18 +144,18 @@ int	main(int argc, char **argv, char **env)
 		while (tab_pipe && tab_pipe[i])
 		{
 			tab_pipe[i] = test(tab_pipe[i], env_copy, last_return); // renomme les variable selon "" ''
-			str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
+			// str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
 			if (tab_pipe[i + 1])
 			{
 				dup2(saved_stdout, STDOUT_FILENO);
-				fd = ft_pipe(str_split, fd, env_copy);
+				fd = ft_pipe(tab_pipe[i], fd, env_copy);
 				dup2(saved_stdin, STDIN_FILENO);
 			}	
 			else
 			{
 				// lire_pipe(fd);
 				dup2(saved_stdout, STDOUT_FILENO);
-				ft_pipe_last(str_split, fd, env_copy);
+				ft_pipe_last(tab_pipe[i], fd, env_copy);
 			}
 			i++;
 		}

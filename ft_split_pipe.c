@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_pipe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 11:39:33 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 11:40:39 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/07 19:57:19 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 
 void	ft_gestion_quote_count_pipe(char *str, int *i)
 {

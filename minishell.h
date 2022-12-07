@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 11:42:57 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/07 20:04:39 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ char	*get_variable_in_env(char *env[], char *variable);
 char	*ft_expand_last_return(char *str, char *char_last_return, size_t begin,
 			size_t n);
 char	**ft_split_pipe (char *str);
+int		redirections(char *str, char **envp);
+int		exec_command(char **cmd, char **env_copy);
 // BULTIN
 void	ft_echo(char	**str_split);
 void	ft_unset_variable_env(char ***env, char *variable);
