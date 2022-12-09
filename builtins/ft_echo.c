@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:32:22 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 10:38:14 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/09 10:23:02 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_echo(char	**str_split)
 	}
 	while (str_split[i])
 	{
-		ft_putstr_fd(str_split[i], 1);
+		ft_putstr_fd(str_split[i], STDOUT_FILENO);
 		i++;
 	}
 	if (new_line_at_end)

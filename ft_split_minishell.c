@@ -6,11 +6,34 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 10:17:19 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/09 16:20:10 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	gestion_quote_nbwords(char *s, size_t *i)
+{
+	if (s[*i] && s[*i] == '\"')
+	{
+		*i += 1;
+		while (s[*i] && s[*i] != '\"')
+		{
+			*i += 1;
+		}
+		*i += 1;
+	}
+	if (s[*i] && s[*i] == '\'')
+	{
+		*i += 1;
+		while (s[*i] && s[*i] != '\'')
+		{
+			*i += 1;
+		}
+		*i += 1;
+	}
+	return ;
+}
 
 static int	ft_nbwords_minishell(char *s, char sep)
 {
@@ -29,24 +52,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 		}
 		if (s[i] == '\0')
 			nbline --;
-		if (s[i] && s[i] == '\"')
-		{
-			i++;
-			while (s[i] && s[i] != '\"')
-			{
-				i++;
-			}
-			i++;
-		}
-		if (s[i] && s[i] == '\'')
-		{
-			i++;
-			while (s[i] && s[i] != '\'')
-			{
-				i++;
-			}
-			i++;
-		}
+		gestion_quote_nbwords(s, &i);
 		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 			i++;
 		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )

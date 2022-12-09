@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/07 20:08:46 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/09 15:42:49 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,37 @@
 // #include <readline/readline.h>
 // #include <readline/history.h>
 // #include </Users/tkempf-e/.brew/Cellar/readline/8.2.1/include/readline/readline.h>
+
+char	*ft_strjoin_test(char *s1, char *s2)
+{
+	char	*join;
+	int		i;
+	int		j;
+
+	j = 0;
+	i = 0;
+	sleep(1);
+	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!join)
+		return (NULL);
+	while (s1 && s1[i])
+	{
+		join[i] = *(char *)(s1 + i);
+		i++;
+	}
+	while (s2[j])
+	{
+		join[i + j] = *(char *)(s2 + j);
+		j++;
+	}
+	join[i + j] = '\0';
+	free(s1); // faut surement free
+	return (join);
+}
+
 // int	ft_strcmp(char *str1, char *str2)
 // {
 // 	int		i;
-
 // 	if (!str1 && !str2)
 // 		return (0);
 // 	i = 0;
@@ -41,17 +68,13 @@ void	enter_redirect(char *entry, char *cmd, char **envp)
 {
 	int		fdopen;
 	char	**cmd_split;
-	int		pid;
 
 	cmd_split = ft_split_minishell(cmd, ' ');
 	fdopen = open(entry, O_RDONLY);
 	dup2(fdopen, STDIN_FILENO);
 	close(fdopen);
-	pid = fork();
-	if (pid == 0)
-		exec_command(cmd_split, envp);
+	exec_command(cmd_split, envp);
 	ft_free_doublechar(&cmd_split);
-	waitpid(pid, 0, 0);
 }
 
 /*
@@ -62,70 +85,44 @@ void	here_doc(char *cmd, char *delimiter, char **envp)
 {
 	char	*str;
 	char	*line;
+	int		saved_stdout;
 	int		fd;
 
 	line = 0;
 	str = 0;
+	saved_stdout = dup(STDOUT_FILENO);
+	fd = open(".hairdoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
 	while (1)
 	{
+		dup2(1, STDOUT_FILENO);
 		line = readline("heredoc> ");
 		if (ft_strcmp(line, delimiter) == 0)
 			break ;
-		str = ft_strjoin(str, ft_strjoin(line, "\n"));
+		dup2(fd, STDOUT_FILENO);
+		ft_putstr_fd(line, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
 	}
-	fd = open(".hairdoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
-	ft_putstr_fd(str, fd);
-	free (str);
 	close(fd);
 	enter_redirect(".hairdoc", cmd, envp);
-}
-
-char	*ft_fdtostr(int fd)
-{
-	char	*str;
-	char	buffer[2];
-	int		octet;
-
-	str = NULL;
-	octet = read(fd, buffer, 1);
-	buffer[1] = 0;
-	str = ft_strjoin(str, buffer);
-	while (octet > 0)
-	{
-		octet = read(fd, buffer, 1);
-		buffer[octet] = 0;
-		str = ft_strjoin(str, buffer);
-	}
-	return (str);
 }
 
 // cmd > exit
 void	exit_redirect(char *exit, char *cmd, char **envp)
 {
 	int		fdopen;
-	int		fd[2];
+	int		saved_stdout;
 	char	**cmd_split;
-	char	*path;
-	int		pid;
 
 	cmd_split = ft_split_minishell(cmd, ' ');
-	pipe(fd);
-	pid = fork();
-	if (pid == 0)
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
-		exec_command(cmd_split, envp);
-	}
-	close(fd[1]);
-	path = ft_fdtostr(fd[0]);
-	close(fd[0]);
+	saved_stdout = dup(STDOUT_FILENO);
 	fdopen = open(exit, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	ft_putstr_fd(path, fdopen);
+	dup2(fdopen, STDOUT_FILENO);
+	exec_command(cmd_split, envp);
 	ft_free_doublechar(&cmd_split);
+	dup2(saved_stdout, STDOUT_FILENO);
 	close(fdopen);
-	waitpid(pid, 0, 0);
+	close(saved_stdout);
 }
 
 int	redirection_counter(char *str)
@@ -179,7 +176,7 @@ char	*pre_redirect(char *str)
 {
 	char	*new_str;
 	int		redirect_nbr;
-	
+
 	redirect_nbr = redirection_counter(str);
 	if (redirect_nbr < 2)
 		return (str);
@@ -190,29 +187,17 @@ char	*pre_redirect(char *str)
 void	exit_append_redirect(char *exit, char *cmd, char **envp)
 {
 	int		fdopen;
-	int		fd[2];
+	int		saved_stdout;
 	char	**cmd_split;
-	char	*path;
-	int		pid;
 
 	cmd_split = ft_split_minishell(cmd, ' ');
-	pipe(fd);
-	pid = fork();
-	if (pid == 0)
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
-		exec_command(cmd_split, envp);
-	}
-	close(fd[1]);
-	path = ft_fdtostr(fd[0]);
-	close(fd[0]);
+	saved_stdout = dup(STDOUT_FILENO);
 	fdopen = open(exit, O_CREAT | O_RDWR | O_APPEND, 0644);
-	ft_putstr_fd(path, fdopen);
+	dup2(fdopen, STDOUT_FILENO);
+	exec_command(cmd_split, envp);
 	ft_free_doublechar(&cmd_split);
+	dup2(saved_stdout, STDOUT_FILENO);
 	close(fdopen);
-	waitpid(pid, 0, 0);
 }
 // cmd                        Stdin      envp   => fd
 // cmd2                       fd    envp =>fd2

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 20:07:21 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/09 15:09:16 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	ft_pipe_last(char *cmd, int inputfd, char **env_copy)
 	close(fd[1]);
 	close(fd[0]);
 	dup2(inputfd, STDIN_FILENO);
-	redirections(cmd, env_copy); 
+	redirections(cmd, env_copy);
 	return (0);
 }
 
@@ -169,5 +169,3 @@ int	main(int argc, char **argv, char **env)
 }
 
 // rajouter des protection sur toute les fonctions + les retour pour $? de chaque fonction + verifier que tout soit free au bon moment
-
-// errreur ----> echo "cat | cat | cat | cat |" | cat
