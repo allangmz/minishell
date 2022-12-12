@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/12 11:17:35 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:49:53 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,7 +380,7 @@ void	redirect_options(char *str, char **envp)
 		if (redirection.redirection == 2)
 		{
 			exit_append_redirect(redirection.file, str);
-			i ++;
+			i++;
 		}
 		else if (redirection.redirection == 1)
 		{
@@ -417,12 +417,7 @@ char	*ft_cmd(char *str, int i, int *ptrj)
 	split = ft_split(str, str[i]);
 	cmd = split[0];
 	i = 1;
-	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
-	free (split);
+	ft_free_doublechar(&split);
 	return (cmd);
 }
 

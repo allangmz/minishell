@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_path.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 11:13:28 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/12 12:07:32 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_search_path(char **command_split, char **path_list)
 		free(temp);
 		temp = ft_strjoin("/", command_split[0]);
 		path = ft_strjoin(path_list[i], temp);
-		i ++;
+		i++;
 	}
 	free(temp);
 	if (!path_list[i])
