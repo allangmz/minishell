@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/09 15:09:16 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:14:38 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@
 int exec_command(char **cmd, char **env_copy)
 {
 	int		last_return;
-
 
 	last_return = 0;
 	if (ft_strcmp(cmd[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?

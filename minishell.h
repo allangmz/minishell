@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 20:04:39 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/12 09:41:14 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+typedef struct s_redirection
+{
+	int		redirection;
+	char	*file;
+}	t_redirection;
 
 char	**ft_copy_env(char **env);
 int		ft_get_indice_variable(char *env[], char *variable);

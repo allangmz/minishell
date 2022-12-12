@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/10 12:35:21 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:17:35 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,17 +239,47 @@ int	ft_test(char *str, int i)
 	return (0);
 }
 
-char	*ft_file(char *str, int i)
+int	ft_pick_redirection(char *str)
 {
-	char	*file;
-	int		limit[2];
-	int		j;
+	int	i;
+	int	redirection;
 
+	i = 0;
+	if (str[i] == '>')
+	{
+		redirection = 1;
+		i++;
+		if (str[i] == '>')
+		{
+			redirection = 2;
+		}
+	}
+	if (str[i] == '<')
+	{
+		redirection = 3;
+		i++;
+		if (str[i] == '<')
+		{
+			redirection = 4;
+		}
+	}
+	return (redirection);
+}
+
+t_redirection	ft_file(char *str, int i)
+{
+	int				limit[2];
+	int				j;
+	t_redirection	redirection;
+
+	redirection.file = NULL;
+	redirection.redirection = 0;
 	while (str[i])
 	{
 		// ajouter gestion quote
 		if (str[i] == '>' || str[i] == '<')
 		{
+			redirection.redirection = ft_pick_redirection(str + i);
 			i++;
 			if (str[i] == '>' || str[i] == '<')
 			{
@@ -268,68 +298,69 @@ char	*ft_file(char *str, int i)
 					i++;
 				}
 				limit[1] = i;
-				file = malloc(sizeof(char) * (limit[1] - limit[0]));
+				redirection.file = malloc(sizeof(char) * (limit[1] - limit[0]));
 				i = limit[0];
 				j = 0;
 				while (str[i] && ft_isalnum(str[i]) == 0)
 				{
-					file[j] = str[i];
+					redirection.file[j] = str[i];
 					i++;
 					j++;
 				}
-				return (file);
+				return (redirection);
 			}
 		}
 		i++;
 	}
-	return (NULL);
+	return (redirection);
 }
 
 void	delete_redirection_to_str(char **str)
 {
-	char	*file;
 	int		limit[2];
-	int		j;
+	int		i;
 
-	while (str[i])
+	i = 0;
+	while ((*str)[i])
 	{
 		// ajouter gestion quote
-		if (str[i] == '>' || str[i] == '<')
+		if ((*str)[i] == '>' || (*str)[i] == '<')
 		{
 			limit[0] = i;
 			i++;
-			if (str[i] == '>' || str[i] == '<')
+			if ((*str)[i] == '>' || (*str)[i] == '<')
 			{
 				i++;
 			}
 			// ajouter gestion quote
-			while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
+			while (((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' ')
 			{
 				i++;
 			}
-			if (str[i] && ft_isalnum(str[i]) == 0)
+			limit[1] = i;
+			if ((*str)[i] && ft_isalnum((*str)[i]) == 0)
 			{
-				while (str[i] && ft_isalnum(str[i]) == 0)
+				while ((*str)[i] && ft_isalnum((*str)[i]) == 0)
 				{
 					i++;
 				}
 				limit[1] = i;
-				str = ft_delete_nchar(str, limit[0], limit[1] - limit[0]); //je sai pas si ca marche
+				(*str) = ft_delete_nchar((*str), limit[0], limit[1] - limit[0]); //je sai pas si ca marche
 			}
 		}
 		i++;
 	}
-	return (NULL);
+	return ;
 }
 
-void	redirect_options(char *str, char *cmd, char **envp)
+void	redirect_options(char *str, char **envp)
 {
-	int		i;
-	int		saved_stdout;
-	int		saved_stdin;
-	char	**cmd_split;
-	char 	*file;
-	int		tmp;
+	int				i;
+	int				saved_stdout;
+	int				saved_stdin;
+	char			**cmd_split;
+	t_redirection	redirection;
+	int				tmp;
 
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stdin = dup(STDIN_FILENO);
@@ -342,33 +373,33 @@ void	redirect_options(char *str, char *cmd, char **envp)
 		if (tmp == -1)
 			break ;
 		i += tmp;
-		file = ft_file(str, i);
-		fprintf(stderr," OUIIIIII %s\n",file);
-		if (!file)
+		redirection = ft_file(str, i);
+		delete_redirection_to_str(&str);
+		if (!redirection.file)
 			break ;
-		if (str[i] == '>' && str[i + 1] == '>')
+		if (redirection.redirection == 2)
 		{
-			exit_append_redirect(file, cmd);
+			exit_append_redirect(redirection.file, str);
 			i ++;
 		}
-		else if (str[i] == '>')
+		else if (redirection.redirection == 1)
 		{
-			exit_redirect(file, cmd);
+			exit_redirect(redirection.file, str);
 		}
-		else if (str[i] == '<' && str[i + 1] == '<')
+		else if (redirection.redirection == 4)
 		{
-			here_doc(cmd, file);
+			here_doc(str, redirection.file);
 			i++;
 		}
-		else if (str[i] == '<')
+		else if (redirection.redirection == 3)
 		{
-			enter_redirect(file, cmd);
+			enter_redirect(redirection.file, str);
 		}
 		i++;
-		delete_redirection_to_str(&str);
-		free(file);
+		if (redirection.file)
+			free(redirection.file);
 	}
-	cmd_split = ft_split_minishell(cmd, ' ');
+	cmd_split = ft_split_minishell(str, ' ');
 	exec_command(cmd_split, envp);
 	ft_free_doublechar(&cmd_split);
 	dup2(saved_stdout, STDOUT_FILENO);
@@ -398,8 +429,6 @@ char	*ft_cmd(char *str, int i, int *ptrj)
 int	redirections(char *cmd, char **envp)
 {
 	int		i;
-	int		j;
-	char	*new_str;
 	char 	**cmd_split;
 
 	i = redirection_checker(cmd);
@@ -411,9 +440,9 @@ int	redirections(char *cmd, char **envp)
 		exec_command(cmd_split, envp);
 		return (0);
 	}
-	new_str = pre_redirect(cmd);
-	cmd = ft_cmd(new_str, i, &j);
+	// new_str = pre_redirect(cmd);
+	// cmd = ft_cmd(new_str, i, &j);
 	// file = ft_file(new_str, i, &j);
-	redirect_options(new_str, cmd, envp);
+	redirect_options(cmd,envp);
 	return (0);
 }
