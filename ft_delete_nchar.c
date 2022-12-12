@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:47:15 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 12:16:49 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/12 16:35:34 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,6 @@ char	*ft_delete_nchar(char *str, int begin, int n)
 	{
 		newstr = delete_not_until_the_end(size - n, newstr, str, limit);
 	}
-	// free(str); pas alloué
+	// free(str); // pas alloué
 	return (newstr);
 }

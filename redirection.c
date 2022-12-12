@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/12 11:49:53 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/12 16:45:13 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,14 +107,10 @@ void	here_doc(char *cmd, char *delimiter)
 }
 
 // cmd > exit
-void	exit_redirect(char *exit, char *cmd)
+void	exit_redirect(char *exit)
 {
 	int		fdopen;
-	int		saved_stdout;
-	char	**cmd_split;
 
-	cmd_split = ft_split_minishell(cmd, ' ');
-	saved_stdout = dup(STDOUT_FILENO);
 	fdopen = open(exit, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	dup2(fdopen, STDOUT_FILENO);
 }
@@ -372,35 +368,40 @@ void	redirect_options(char *str, char **envp)
 		tmp = redirection_checker(str + i);
 		if (tmp == -1)
 			break ;
-		i += tmp;
+		// i += tmp;
 		redirection = ft_file(str, i);
 		delete_redirection_to_str(&str);
 		if (!redirection.file)
 			break ;
+		fprintf(stderr, "TEST file %s\n", redirection.file);
+		fprintf(stderr, "TEST redirec %d\n", redirection.redirection);
+		fprintf(stderr, "TEST str %s %d\n", str, i);
 		if (redirection.redirection == 2)
 		{
+			dup2(saved_stdout, STDOUT_FILENO);
 			exit_append_redirect(redirection.file, str);
-			i++;
 		}
 		else if (redirection.redirection == 1)
 		{
-			exit_redirect(redirection.file, str);
+			dup2(saved_stdout, STDOUT_FILENO);
+			exit_redirect(redirection.file);
 		}
 		else if (redirection.redirection == 4)
 		{
+			dup2(saved_stdin, STDIN_FILENO);
 			here_doc(str, redirection.file);
-			i++;
 		}
 		else if (redirection.redirection == 3)
 		{
+			dup2(saved_stdin, STDIN_FILENO);
 			enter_redirect(redirection.file, str);
 		}
-		i++;
 		if (redirection.file)
 			free(redirection.file);
 	}
 	cmd_split = ft_split_minishell(str, ' ');
 	exec_command(cmd_split, envp);
+	ft_putstr_fd("terminer\n", 2);
 	ft_free_doublechar(&cmd_split);
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stdin, STDIN_FILENO);
@@ -433,6 +434,7 @@ int	redirections(char *cmd, char **envp)
 	{
 		cmd_split = ft_split_minishell(cmd, ' ');
 		exec_command(cmd_split, envp);
+		ft_free_doublechar(&cmd_split);
 		return (0);
 	}
 	// new_str = pre_redirect(cmd);
