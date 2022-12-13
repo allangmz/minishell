@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 16:24:46 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 15:43:57 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,12 @@ int ft_exec_path(char **command_split, char *env[])
 	int		status;
 	// int		status;
 	pid_t	pid;
-	fprintf(stderr,"terminer 1\n");
 	
 	if (!command_split)
 	{
 		printf("commande vide\n");
 		return (-3);
 	}
-	fprintf(stderr,"terminer 2\n");
-
 	if (!ft_strrchr(command_split[0],'/'))
 	{
 		pathname = ft_get_path(command_split, env, "PATH");
@@ -78,15 +75,11 @@ int ft_exec_path(char **command_split, char *env[])
 	{
 		pathname = command_split[0];
 	}
-	fprintf(stderr,"terminer 3\n");
-
 	if (access(pathname, X_OK) == -1 || pathname == NULL)
 	{
 		printf("ca marche aps la commande\n");
 		return (-2); // faudra tous free
 	}
-	fprintf(stderr,"terminer 4\n");
-
 	pid = fork();
 	if (pid == -1)
 	{
@@ -97,18 +90,15 @@ int ft_exec_path(char **command_split, char *env[])
 	else if (pid == 0)
 	{
 		usleep(10);
-	fprintf(stderr,"terminer 5\n");
 
 		execve(pathname, command_split, env);
 
 	}
 	else
 	{
-		fprintf(stderr,"terminer 6\n");
 }
 	// wait(0);
 	 waitpid(pid, &status, 0);
-	fprintf(stderr,"terminer 7\n");
 	free(pathname);
 	return (0);
 }

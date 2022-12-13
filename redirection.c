@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/12 16:45:13 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 15:51:17 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,10 +286,10 @@ t_redirection	ft_file(char *str, int i)
 			{
 				i++;
 			}
-			if (str[i] && ft_isalnum(str[i]) == 0)
+			if (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 			{
 				limit[0] = i;
-				while (str[i] && ft_isalnum(str[i]) == 0)
+				while (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 				{
 					i++;
 				}
@@ -297,7 +297,7 @@ t_redirection	ft_file(char *str, int i)
 				redirection.file = malloc(sizeof(char) * (limit[1] - limit[0]));
 				i = limit[0];
 				j = 0;
-				while (str[i] && ft_isalnum(str[i]) == 0)
+				while (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 				{
 					redirection.file[j] = str[i];
 					i++;
@@ -334,14 +334,15 @@ void	delete_redirection_to_str(char **str)
 				i++;
 			}
 			limit[1] = i;
-			if ((*str)[i] && ft_isalnum((*str)[i]) == 0)
+			if ((*str)[i] && !(((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' '))
 			{
-				while ((*str)[i] && ft_isalnum((*str)[i]) == 0)
+				while ((*str)[i] && !(((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' '))
 				{
 					i++;
 				}
 				limit[1] = i;
 				(*str) = ft_delete_nchar((*str), limit[0], limit[1] - limit[0]); //je sai pas si ca marche
+				return ;
 			}
 		}
 		i++;
@@ -368,7 +369,7 @@ void	redirect_options(char *str, char **envp)
 		tmp = redirection_checker(str + i);
 		if (tmp == -1)
 			break ;
-		// i += tmp;
+		i = 0;
 		redirection = ft_file(str, i);
 		delete_redirection_to_str(&str);
 		if (!redirection.file)
