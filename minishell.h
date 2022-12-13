@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 09:41:14 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/13 18:42:12 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <dirent.h>
+
+int LAST_RETURN;
 
 typedef struct s_redirection
 {
@@ -33,6 +36,7 @@ typedef struct s_redirection
 }	t_redirection;
 
 char	**ft_copy_env(char **env);
+char	*ft_create_str_copy(char *src, int n);
 int		ft_get_indice_variable(char *env[], char *variable);
 char	*test(char *str, char *env[], int last_return);
 void	handle_signals(int signo);
@@ -53,9 +57,9 @@ int		exec_command(char **cmd, char **env_copy);
 // BULTIN
 void	ft_echo(char	**str_split);
 void	ft_unset_variable_env(char ***env, char *variable);
-void	ft_export_variable_env(char ***env, char *str);
+int		ft_export_variable_env(char ***env, char *str);
 void	ft_print_env(char **env);
-void	ft_cd(char **cmd, char ***env_copy);
+int		ft_cd(char **cmd, char ***env_copy);
 void	ft_pwd(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 16:50:01 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:53:41 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,46 +19,45 @@
 #include <sys/types.h>
 #include "minishell.h"
 
-// make a copy of src. if n = 0 copy all the src
-// char	*ft_create_str_copy(char *src, int n)
-// {
-// 	char	*copy;
-// 	int		i;
+//make a copy of src. if n = 0 copy all the src
+char	*ft_create_str_copy(char *src, int n)
+{
+	char	*copy;
+	int		i;
 
-// 	if (n == 0)
-// 		n = ft_strlen(src);
-// 	copy = malloc(sizeof(char) * (n + 1));
-// 	i = 0;
-// 	while (i < n)
-// 	{
-// 		copy[i] = src[i];
-// 		i++;
-// 	}
-// 	copy[i] = '\0';
-// 	return (copy);
-// }
+	if (n == 0)
+		n = ft_strlen(src);
+	copy = malloc(sizeof(char) * (n + 1));
+	i = 0;
+	while (i < n)
+	{
+		copy[i] = src[i];
+		i++;
+	}
+	copy[i] = '\0';
+	return (copy);
+}
 
 
 int exec_command(char **cmd, char **env_copy)
 {
-	int		last_return;
-
-	last_return = 0;
 	if (ft_strcmp(cmd[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
 		ft_pwd();
 	else if (ft_strcmp(cmd[0], "cd") == 0)
-		ft_cd(cmd, &env_copy);
+		LAST_RETURN = ft_cd(cmd, &env_copy);
 	else if (ft_strcmp(cmd[0], "env") == 0)
 		ft_print_env(env_copy);// valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		ft_export_variable_env(&env_copy, cmd[1]); // verifier que la valeur est presente
+		LAST_RETURN = ft_export_variable_env(&env_copy, cmd[1]); // verifier que la valeur est presente
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 		ft_unset_variable_env(&env_copy, cmd[1]);// valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "echo") == 0)	
 		ft_echo(cmd); // valeur de retour last_return
+	else if (ft_strcmp(cmd[0], "exit") == 0)	
+		exit(0); // valeur de retour last_return
 	else
-		last_return = ft_exec_path(cmd, env_copy); // gerer le last return
-	return (last_return);
+		LAST_RETURN = ft_exec_path(cmd, env_copy); // gerer le last return
+	return 0;
 }
 
 int	ft_pipe(char *cmd, int inputfd, char **env_copy)

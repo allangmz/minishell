@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 16:48:19 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:49:42 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int ft_exec_path(char **command_split, char *env[])
 {
 	char	*pathname;
 	int		status;
-	// int		status;
+	// int		status; 
 	pid_t	pid;
 	
 	if (!command_split)
@@ -73,7 +73,7 @@ int ft_exec_path(char **command_split, char *env[])
 	}
 	else
 	{
-		pathname = command_split[0];
+		pathname = ft_create_str_copy(command_split[0], 0);
 	}
 	if (access(pathname, X_OK) == -1 || pathname == NULL)
 	{
@@ -93,9 +93,7 @@ int ft_exec_path(char **command_split, char *env[])
 	else if (pid == 0)
 	{
 		usleep(10);
-
 		execve(pathname, command_split, env);
-
 	}
 	else
 	{
