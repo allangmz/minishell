@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:40:27 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 17:30:47 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 19:44:08 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,12 @@ void	ft_add_variable_env(char ***env, char *str)
 			new_env[i][j] = (*env)[i][j];
 			j++;
 		}
-		new_env[i++][j] = '\0';
+		new_env[i][j] = '\0';
+		i++;
 	}
-	new_env[i] = ft_substr(str, 0, ft_strlen(str));
-	new_env[++i] = NULL;
+	new_env[i] = ft_substr(str, 0, ft_strlen(str) + 1);
+	i++;
+	new_env[i] = NULL;
 	ft_free_doublechar(env);
 	*env = new_env;
 	return ;
@@ -75,7 +77,7 @@ char	*ft_variable_extract(char *str)
 	if (!variable)
 		return (NULL);
 	i = 0;
-	while (str[i] != '=')
+	while (str[i] && str[i] != '=')
 	{
 		variable[i] = str[i];
 		i++;

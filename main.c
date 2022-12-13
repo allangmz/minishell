@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 17:53:41 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 20:34:49 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ void lire_pipe(int pipe_fd)
 int	check_str(char *str)
 {
 	int		i;
+	int		check;
 
 	i = 0;
 	if (!str[i])
@@ -128,8 +129,44 @@ int	check_str(char *str)
 		}
 		i++;
 	}
+	i = 0;
+	while (str[i] && str[i] == ' ')
+		i++;
+	if (!str[i])
+		return (-1);
+	if (ft_isalnum(str[i]) == -1)
+	{
+		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
+		return (-1);
+	}
+	check = 0;
+	while (str[i] && ft_isalnum(str[i]) == 0)
+		i++;
+	if (str[i])
+	{
+		while (str[i] && ft_isalnum(str[i]) == -1)
+			i++;
+		while (str[i])
+		{
+			if (ft_isalnum(str[i]) == 0)
+				check = 1;
+			i++;
+		}
+		if (check == 0)
+			return (-1);
+	}
 	return (000);
 }
+
+/*
+bugs :
+Minishell : echo salut> test
+Minishell : echo salut >test
+segfault parfois :
+Minishell :    |
+Minishell :      >
+Minishell :       *plein despaces*
+*/
 
 int	main(int argc, char **argv, char **env)
 {
