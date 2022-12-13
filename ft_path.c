@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 15:43:57 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 16:48:19 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int ft_exec_path(char **command_split, char *env[])
 	
 	if (!command_split)
 	{
-		printf("commande vide\n");
+		ft_putstr_fd("commande vide\n",2);
 		return (-3);
 	}
 	if (!ft_strrchr(command_split[0],'/'))
@@ -77,13 +77,16 @@ int ft_exec_path(char **command_split, char *env[])
 	}
 	if (access(pathname, X_OK) == -1 || pathname == NULL)
 	{
-		printf("ca marche aps la commande\n");
+		ft_putstr_fd("Minishell: command not found: ",2);
+		ft_putstr_fd(command_split[0],2);
+		ft_putstr_fd("\n",2);
 		return (-2); // faudra tous free
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		printf("ca marche aps le pid\n");
+		ft_putstr_fd("Minishell: ft_exec_path: crash fork ",2);
+		ft_putstr_fd("\n",2);
 		//erreur
 		return (-3); // faudra tous free
 	}

@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/13 15:51:17 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:13:02 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,7 @@ int	redirection_checker(char *str)
 			while (str[i] && str[i] != '\"')
 				i++;
 		}
-		if (i > 0 && (str[i] == '<' || str[i] == '>')
-			&& (str[i] == str[i - 1] || str[i - 1] == ' '))
+		if (i > 0 && (str[i] == '<' || str[i] == '>'))
 			return (i);
 		i++;
 	}
@@ -229,7 +228,7 @@ int	ft_test(char *str, int i)
 {
 	if (i > 0 && (str[i + 1] != str[i] && ft_isalnum(str[i + 1]) == -1))
 	{
-		printf("Minishell: syntax error near unexpected token '%c'\n", str[i]);
+		printf("Minishell : syntax error near unexpected token '%c'\n", str[i]);
 		return (-1);
 	}
 	return (0);
@@ -289,11 +288,13 @@ t_redirection	ft_file(char *str, int i)
 			if (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 			{
 				limit[0] = i;
+				// fprintf(stderr, "TEST limit[0] %c\n", str[i]);
 				while (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 				{
 					i++;
 				}
 				limit[1] = i;
+				// fprintf(stderr, "TEST limit[1] %c\n", str[i]);
 				redirection.file = malloc(sizeof(char) * (limit[1] - limit[0]));
 				i = limit[0];
 				j = 0;
@@ -373,10 +374,10 @@ void	redirect_options(char *str, char **envp)
 		redirection = ft_file(str, i);
 		delete_redirection_to_str(&str);
 		if (!redirection.file)
-			break ;
-		fprintf(stderr, "TEST file %s\n", redirection.file);
-		fprintf(stderr, "TEST redirec %d\n", redirection.redirection);
-		fprintf(stderr, "TEST str %s %d\n", str, i);
+			break ;	
+	 	// fprintf(stderr, "TEST file %s\n", redirection.file);
+		// fprintf(stderr, "TEST redirec %d\n", redirection.redirection);
+		// fprintf(stderr, "TEST str %s %d\n", str, i);
 		if (redirection.redirection == 2)
 		{
 			dup2(saved_stdout, STDOUT_FILENO);
@@ -402,7 +403,6 @@ void	redirect_options(char *str, char **envp)
 	}
 	cmd_split = ft_split_minishell(str, ' ');
 	exec_command(cmd_split, envp);
-	ft_putstr_fd("terminer\n", 2);
 	ft_free_doublechar(&cmd_split);
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stdin, STDIN_FILENO);

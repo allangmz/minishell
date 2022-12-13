@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 11:39:33 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 19:57:19 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 16:25:02 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	ft_gestion_quote_count_pipe(char *str, int *i)
 
 int	ft_count_pipe(char *str)
 {
-	int	pipe_count;
-	int	i;
+	int		pipe_count;
+	int		i;
 
 	i = 0;
 	pipe_count = 1;

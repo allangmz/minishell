@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 12:03:16 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/13 16:50:01 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,34 @@ void lire_pipe(int pipe_fd)
       }
 }
 
+int	check_str(char *str)
+{
+	int		i;
+
+	i = 0;
+	if (!str[i])
+	{
+		return (-1);
+	}
+	while (str[i])
+	{
+		if (str[i] == '|')
+		{
+			i++;
+			while (ft_isalnum(str[i]) == -1)
+			{
+				if (str[i] == '|')
+				{
+					printf("Minishell : Parse error near \'|\'\n");
+					return (-1);
+				}
+				i++;
+			}
+		}
+		i++;
+	}
+	return (000);
+}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -132,6 +160,11 @@ int	main(int argc, char **argv, char **env)
 		if (!str)
 		{
 			return (0);
+		}
+		if (check_str(str) == -1)
+		{
+			free (str);
+			continue ;
 		}
 		// fprintf(stderr,"test\n");
 		usleep(20);
