@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_expand_string_variables.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 12:05:26 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 12:19:37 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	*ft_expand_string_variables(char *str, char *env[], size_t begin, size_t n)
 		{
 			i++;
 			j = 0;
-			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+			while (str[i] && (ft_isalnum(str[i]) == 0 || str[i] == '_'))
 			{
 				i++;
 				j++;

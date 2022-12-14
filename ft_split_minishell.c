@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/09 16:20:10 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 14:03:02 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	ft_nbwords_minishell(char *s, char sep)
 		gestion_quote_nbwords(s, &i);
 		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 			i++;
-		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
+		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep))
 		{
 			nbline++;
 		}
@@ -210,7 +210,7 @@ int	ft_size_variable(char *str)
 
 	i = 0;
 	i++;
-	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+	while (str[i] && (ft_isalnum(str[i]) == 0 || str[i] == '_'))
 	{
 		i++;
 	}
@@ -218,11 +218,11 @@ int	ft_size_variable(char *str)
 }
 
 // traduit les variables par leur traduction
-char	*test(char *str, char *env[], int last_return)
+// traduit les variables par leur traduction
+char	*test(char *str, char *env[])
 {
 	int		i;
 	char	*char_last_return;
-
 	i = 0;
 	while (str[i])
 	{
@@ -241,7 +241,7 @@ char	*test(char *str, char *env[], int last_return)
 				{
 					if (str[i] &&str[i + 1] == '?')
 					{
-						char_last_return = ft_itoa(last_return);
+						char_last_return = ft_itoa(LAST_RETURN);
 						str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 					}
 					else if (str[i] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
@@ -260,11 +260,11 @@ char	*test(char *str, char *env[], int last_return)
 			{
 				if (str[i] && str[i + 1] == '?')
 				{
-					char_last_return = ft_itoa(last_return);
+					char_last_return = ft_itoa(LAST_RETURN);
 					str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
 				}
-				else if (str[i] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
-				{	
+				else if (str[i] && (ft_isalnum(str[i + 1]) == 0 || str[i + 1] == '_'))
+				{
 					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
 				}
 			}

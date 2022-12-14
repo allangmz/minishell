@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 20:34:49 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 14:12:47 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,13 +158,22 @@ int	check_str(char *str)
 	return (000);
 }
 
+int	check_empty(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ')
+			return (0);
+		i++;
+	}
+	return (-1);
+}
+
 /*
 bugs :
-Minishell : echo salut> test
-Minishell : echo salut >test
-segfault parfois :
-Minishell :    |
-Minishell :      >
 Minishell :       *plein despaces*
 */
 
@@ -197,22 +206,23 @@ int	main(int argc, char **argv, char **env)
 		{
 			return (0);
 		}
-		if (check_str(str) == -1)
-		{
-			free (str);
+		if (check_empty(str) == -1)
 			continue ;
-		}
 		// fprintf(stderr,"test\n");
 		usleep(20);
 		add_history(str);
+		str = test(str, env_copy);
 		i = 0;
 		tab_pipe = ft_split_pipe(str);
 		fd = STDIN_FILENO;
 		free(str);
+		if (check_str(str) == -1)
+		{
+			continue;
+		}
 		while (tab_pipe && tab_pipe[i])
 		{
-			tab_pipe[i] = test(tab_pipe[i], env_copy, last_return); // renomme les variable selon "" ''
-			// str_split = ft_split_minishell(tab_pipe[i], ' '); // split les espace selon les "" ''
+			// tab_pipe[i] = test(tab_pipe[i], env_copy); // renomme les variable selon "" '
 			if (tab_pipe[i + 1])
 			{
 				dup2(saved_stdout, STDOUT_FILENO);
@@ -231,7 +241,6 @@ int	main(int argc, char **argv, char **env)
 		if (tab_pipe)
 			ft_free_doublechar(&tab_pipe);
 		dup2(saved_stdin, STDIN_FILENO);
-		// fprintf(stderr,"i   %d", i);
 	}
 	return (0);
 }

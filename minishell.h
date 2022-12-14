@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 18:42:12 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 11:45:15 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_redirection
 char	**ft_copy_env(char **env);
 char	*ft_create_str_copy(char *src, int n);
 int		ft_get_indice_variable(char *env[], char *variable);
-char	*test(char *str, char *env[], int last_return);
+char	*test(char *str, char *env[]);
 void	handle_signals(int signo);
 int		ft_exec_path(char **command_split, char *env[]);
 void	ft_free_doublechar(char ***tab);
