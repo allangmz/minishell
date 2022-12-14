@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:40:27 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 19:44:08 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:47:25 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,50 @@ char	*ft_variable_extract(char *str)
 	return (variable);
 }
 
+static int	ft_verif_variable(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isalnum(str[i]) == -1 && str[i] != '_')
+			return (-1);
+		i++;
+	}
+	return (0);
+}
+
+void	ft_print_export(char ***env)
+{
+	int	i;
+
+	i = 0;
+	while ((*env)[i])
+	{
+		usleep(10);
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd((*env)[i], STDOUT_FILENO);
+		ft_putchar_fd('\n', STDOUT_FILENO);
+		i++;
+	}
+	return ;
+}
+
 int	ft_export_variable_env(char ***env, char *str)
 {
 	char	*variable;
 	int		indice_variable;
 
+	if (str == NULL)
+	{
+		ft_print_export(env);
+		return (0);
+	}
 	variable = ft_variable_extract(str);
 	if (variable == NULL)
 		return (-1); // message d'erreur ?
-	// ft_verif_variable(variable); // verifier si contient que alphanum ou _
+	ft_verif_variable(variable); // verifier si contient que alphanum ou _
 	indice_variable = ft_get_indice_variable(*env, variable);
 	if (indice_variable == -1)
 	{
@@ -105,5 +140,5 @@ int	ft_export_variable_env(char ***env, char *str)
 		ft_change_variable_env(env, indice_variable, str);
 	}
 	free(variable);
-	return 0;
+	return (0);
 }

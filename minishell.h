@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 11:45:15 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:55:57 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*ft_create_str_copy(char *src, int n);
 int		ft_get_indice_variable(char *env[], char *variable);
 char	*test(char *str, char *env[]);
 void	handle_signals(int signo);
-int		ft_exec_path(char **command_split, char *env[]);
+int		ft_exec_path(char **command_split, char **env[]);
 void	ft_free_doublechar(char ***tab);
 char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep);
 char	**ft_split_minishell(char *s, char sep);
@@ -52,13 +52,13 @@ char	*get_variable_in_env(char *env[], char *variable);
 char	*ft_expand_last_return(char *str, char *char_last_return, size_t begin,
 			size_t n);
 char	**ft_split_pipe (char *str);
-int		redirections(char *str, char **envp);
-int		exec_command(char **cmd, char **env_copy);
+int		redirections(char *str, char ***envp);
+int		exec_command(char **cmd, char ***env_copy);
 // BULTIN
 void	ft_echo(char	**str_split);
 void	ft_unset_variable_env(char ***env, char *variable);
 int		ft_export_variable_env(char ***env, char *str);
-void	ft_print_env(char **env);
+void	ft_print_env(char ***env);
 int		ft_cd(char **cmd, char ***env_copy);
 void	ft_pwd(void);
 

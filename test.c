@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 14:41:36 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/08 15:42:59 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:25:36 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ int ft_printf(char *fmt, ...)
 					write(1,&s[i],1);
 				}
 				i++;
-			}                      /* string */
+			}
             else if(fmt[i] == 'd')
-			{                     /* int */
+			{                     
                 d = va_arg(ap, int);
 				if (d<0)
 				{
@@ -89,8 +89,7 @@ int ft_printf(char *fmt, ...)
 				i++;
 			}
             else if(fmt[i] == 'x')
-			{                   /* char */
-                       /* Note: char is promoted to int. */
+			{
             	x = va_arg(ap, long int);
                 e(x,"0123456789ABCDEF", 16);
 				i++;
@@ -106,7 +105,7 @@ int ft_printf(char *fmt, ...)
 		return count;
 }
 /**/
-int main ()
+int	main(void)
 {
-	ft_printf("test %d",-2147483648);
+	ft_printf("test %d", -2147483648);
 }

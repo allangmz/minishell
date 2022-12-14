@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 17:07:34 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 18:15:17 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,18 @@ char	*ft_create_str_copy(char *src, int n)
 }
 
 
-int exec_command(char **cmd, char **env_copy)
+int exec_command(char **cmd, char ***env_copy)
 {
 	if (ft_strcmp(cmd[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
 		ft_pwd();
 	else if (ft_strcmp(cmd[0], "cd") == 0)
-		LAST_RETURN = ft_cd(cmd, &env_copy);
+		LAST_RETURN = ft_cd(cmd, env_copy);
 	else if (ft_strcmp(cmd[0], "env") == 0)
 		ft_print_env(env_copy);// valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		LAST_RETURN = ft_export_variable_env(&env_copy, cmd[1]); // verifier que la valeur est presente
+		LAST_RETURN = ft_export_variable_env(env_copy, cmd[1]); // verifier que la valeur est presente
 	else if (ft_strcmp(cmd[0], "unset") == 0)
-		ft_unset_variable_env(&env_copy, cmd[1]);// valeur de retour last_return
+		ft_unset_variable_env(env_copy, cmd[1]);// valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "echo") == 0)	
 		ft_echo(cmd); // valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "exit") == 0)
@@ -63,7 +63,7 @@ int exec_command(char **cmd, char **env_copy)
 	return 0;
 }
 
-int	ft_pipe(char *cmd, int inputfd, char **env_copy)
+int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
 {
 	int		fd[2];
 	char	*buffer;
@@ -79,7 +79,7 @@ int	ft_pipe(char *cmd, int inputfd, char **env_copy)
 	return (fd[0]);
 }
 
-int	ft_pipe_last(char *cmd, int inputfd, char **env_copy)
+int	ft_pipe_last(char *cmd, int inputfd, char ***env_copy)
 {
 	int		fd[2];
 	char	*buffer;
@@ -185,13 +185,8 @@ int	check_empty(char *str)
 /*
 bugs :
 Minishell :			df > test
-					cd ..
-					pwd .
-					pwd ..
-					les .. en general (../fichier)
-					
+					ls > test
 					verifier au'il y aun PATH si il est unset
-)
 a faire : verifier les last return de execve
 
 */
@@ -245,14 +240,14 @@ int	main(int argc, char **argv, char **env)
 			if (tab_pipe[i + 1])
 			{
 				dup2(saved_stdout, STDOUT_FILENO);
-				fd = ft_pipe(tab_pipe[i], fd, env_copy);
+				fd = ft_pipe(tab_pipe[i], fd, &env_copy);
 				dup2(saved_stdin, STDIN_FILENO);
 			}	
 			else
 			{
 				// lire_pipe(fd);
 				dup2(saved_stdout, STDOUT_FILENO);
-				ft_pipe_last(tab_pipe[i], fd, env_copy);
+				ft_pipe_last(tab_pipe[i], fd, &env_copy);
 			}
 			i++;
 		}

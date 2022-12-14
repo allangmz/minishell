@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/14 16:49:13 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 18:14:20 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ t_redirection	ft_file(char *str, int i)
 	redirection.redirection = 0;
 	while (str[i])
 	{
-		ft_gestion_quote_count(str,&i);
+		ft_gestion_quote_count(str, &i);
 		if (str[i] == '>' || str[i] == '<')
 		{
 			redirection.redirection = ft_pick_redirection(str + i);
@@ -302,7 +302,7 @@ t_redirection	ft_file(char *str, int i)
 			{
 				i++;
 			}
-			ft_gestion_quote_count(str,&i);
+			ft_gestion_quote_count(str, &i);
 			while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 			{
 				i++;
@@ -310,14 +310,15 @@ t_redirection	ft_file(char *str, int i)
 			if (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 			{
 				limit[0] = i;
-				// fprintf(stderr, "TEST limit[0] %c\n", str[i]);
+				// fprintf(stderr, "TEST limit[0] %d %c\n", limit[0], str[limit[0]]);
 				while (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
 				{
 					i++;
 				}
 				limit[1] = i;
-				// fprintf(stderr, "TEST limit[1] %c\n", str[i]);
-				redirection.file = malloc(sizeof(char) * (limit[1] - limit[0]));
+				// fprintf(stderr, "TEST limit[1] %d %c\n", limit[1], str[limit[1]]);
+				// fprintf(stderr, "TEST limit[1] - limit[0] %d %c\n", limit[1] - limit[0], str[limit[1]]);
+				redirection.file = malloc(sizeof(char) * (limit[1] - limit[0] + 1));
 				i = limit[0];
 				j = 0;
 				while (str[i] && !((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' '))
@@ -326,6 +327,7 @@ t_redirection	ft_file(char *str, int i)
 					i++;
 					j++;
 				}
+				redirection.file[j] = '\0';
 				return (redirection);
 			}
 		}
@@ -342,21 +344,23 @@ void	delete_redirection_to_str(char **str)
 	i = 0;
 	while ((*str)[i])
 	{
-		// ajouter gestion quote
-		if ((*str)[i] == '>' || (*str)[i] == '<')
+		ft_gestion_quote_count((*str), &i);
+		if ((*str)[i] && ((*str)[i] == '>' || (*str)[i] == '<'))
 		{
 			limit[0] = i;
 			i++;
-			if ((*str)[i] == '>' || (*str)[i] == '<')
+			if ((*str)[i] && ((*str)[i] == '>' || (*str)[i] == '<'))
 			{
 				i++;
 			}
-			// ajouter gestion quote
-			while (((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' ')
+			ft_gestion_quote_count((*str), &i);
+			while ((*str)[i] && (((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' '))
 			{
 				i++;
 			}
 			limit[1] = i;
+			// fprintf(stderr, "SUPPR limit[0] %d %c\n", limit[0], (*str)[limit[0]]);
+
 			if ((*str)[i] && !(((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' '))
 			{
 				while ((*str)[i] && !(((*str)[i] >= '\t' && (*str)[i] <= '\r') || (*str)[i] == ' '))
@@ -364,6 +368,8 @@ void	delete_redirection_to_str(char **str)
 					i++;
 				}
 				limit[1] = i;
+				// fprintf(stderr, "SUPPR limit[1] %d %c\n", limit[1], (*str)[limit[1]]);
+				fprintf(stderr, "TEST limit[1] - limit[0] %d\n", limit[1] - limit[0]);
 				(*str) = ft_delete_nchar((*str), limit[0], limit[1] - limit[0]); //je sai pas si ca marche
 				return ;
 			}
@@ -373,7 +379,7 @@ void	delete_redirection_to_str(char **str)
 	return ;
 }
 
-void	redirect_options(char *str, char **envp)
+void	redirect_options(char *str, char ***envp)
 {
 	int				i;
 	int				saved_stdout;
@@ -397,9 +403,9 @@ void	redirect_options(char *str, char **envp)
 		delete_redirection_to_str(&str);
 		if (!redirection.file)
 			break ;	
-	 	// fprintf(stderr, "TEST file %s\n", redirection.file);
-		// fprintf(stderr, "TEST redirec %d\n", redirection.redirection);
-		// fprintf(stderr, "TEST str %s %d\n", str, i);
+	 	fprintf(stderr, "TEST file =%s.\n", redirection.file);
+		fprintf(stderr, "TEST redirec =%d.\n", redirection.redirection);
+		fprintf(stderr, "TEST str =%s %d.\n", str, i);
 		if (redirection.redirection == 2)
 		{
 			dup2(saved_stdout, STDOUT_FILENO);
@@ -445,7 +451,7 @@ char	*ft_cmd(char *str, int i, int *ptrj)
 	return (cmd);
 }
 
-int	redirections(char *cmd, char **envp)
+int	redirections(char *cmd, char ***envp)
 {
 	int		i;
 	char 	**cmd_split;
