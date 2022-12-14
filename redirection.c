@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/13 17:13:02 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 16:49:13 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,28 @@ int	ft_pick_redirection(char *str)
 	return (redirection);
 }
 
+static void	ft_gestion_quote_count(char *str, int *i)
+{
+	if (str[*i] && str[*i] == '\'')
+	{
+		*i += 1;
+		while (str[*i] && str[*i] != '\'')
+		{
+			*i += 1;
+		}
+		*i += 1;
+	}
+	if (str[*i] && str[*i] == '\"')
+	{
+		*i += 1;
+		while (str[*i] && str[*i] != '\"')
+		{
+			*i += 1;
+		}
+		*i += 1;
+	}
+}
+
 t_redirection	ft_file(char *str, int i)
 {
 	int				limit[2];
@@ -271,7 +293,7 @@ t_redirection	ft_file(char *str, int i)
 	redirection.redirection = 0;
 	while (str[i])
 	{
-		// ajouter gestion quote
+		ft_gestion_quote_count(str,&i);
 		if (str[i] == '>' || str[i] == '<')
 		{
 			redirection.redirection = ft_pick_redirection(str + i);
@@ -280,7 +302,7 @@ t_redirection	ft_file(char *str, int i)
 			{
 				i++;
 			}
-			// ajouter gestion quote
+			ft_gestion_quote_count(str,&i);
 			while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 			{
 				i++;

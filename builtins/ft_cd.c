@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:51:12 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 18:53:11 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:11:13 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	ft_cd(char **cmd, char ***env_copy)
 {
 	char	*buffer;
 	DIR* 	dir;
-	
+
 	if(cmd[1] && cmd[1][0] == '~')
 	{
 		cmd[1] += 2;

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 15:35:23 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:07:34 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,13 @@ void lire_pipe(int pipe_fd)
       }
 }
 
+int	ft_isforbiden(char c)
+{
+	if (c == '>' || c == '<' || c == '|' || c == '(' || c ==')')
+		return (-1);
+	return (0);
+}
+
 int	check_str(char *str)
 {
 	int		i;
@@ -137,7 +144,7 @@ int	check_str(char *str)
 		i++;
 	if (!str[i])
 		return (-1);
-	if (ft_isalnum(str[i]) == -1 && str[i] != '/')
+	if (ft_isalnum(str[i]) == -1 && str[i] != '/' && str[i] != '\'' && str[i] != '\"' && str[i] != '.')
 	{
 		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
 		return (-1);
@@ -147,11 +154,11 @@ int	check_str(char *str)
 		i++;
 	if (str[i])
 	{
-		while (str[i] && ft_isalnum(str[i]) == -1)
+		while (str[i] && ft_isforbiden(str[i]) == -1)
 			i++;
 		while (str[i])
 		{
-			if (ft_isalnum(str[i]) == 0)
+			if (ft_isforbiden(str[i]) == 0)
 				check = 1;
 			i++;
 		}
@@ -179,7 +186,6 @@ int	check_empty(char *str)
 bugs :
 Minishell :			df > test
 					cd ..
-					cd .
 					pwd .
 					pwd ..
 					les .. en general (../fichier)
