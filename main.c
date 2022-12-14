@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 14:12:47 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/14 15:35:23 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,11 @@ int exec_command(char **cmd, char **env_copy)
 		ft_unset_variable_env(&env_copy, cmd[1]);// valeur de retour last_return
 	else if (ft_strcmp(cmd[0], "echo") == 0)	
 		ft_echo(cmd); // valeur de retour last_return
-	else if (ft_strcmp(cmd[0], "exit") == 0)	
-		exit(0); // valeur de retour last_return
+	else if (ft_strcmp(cmd[0], "exit") == 0)
+	{
+		ft_putstr_fd("exit\n", 2);
+		exit(LAST_RETURN); // valeur de retour last_return
+	}
 	else
 		LAST_RETURN = ft_exec_path(cmd, env_copy); // gerer le last return
 	return 0;
@@ -134,7 +137,7 @@ int	check_str(char *str)
 		i++;
 	if (!str[i])
 		return (-1);
-	if (ft_isalnum(str[i]) == -1)
+	if (ft_isalnum(str[i]) == -1 && str[i] != '/')
 	{
 		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
 		return (-1);
@@ -174,7 +177,17 @@ int	check_empty(char *str)
 
 /*
 bugs :
-Minishell :       *plein despaces*
+Minishell :			df > test
+					cd ..
+					cd .
+					pwd .
+					pwd ..
+					les .. en general (../fichier)
+					
+					verifier au'il y aun PATH si il est unset
+)
+a faire : verifier les last return de execve
+
 */
 
 int	main(int argc, char **argv, char **env)
@@ -246,3 +259,4 @@ int	main(int argc, char **argv, char **env)
 }
 
 // rajouter des protection sur toute les fonctions + les retour pour $? de chaque fonction + verifier que tout soit free au bon moment
+			

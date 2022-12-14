@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:32:22 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 15:36:18 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/14 14:59:11 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,16 @@ void	ft_echo(char	**str_split)
 
 	new_line_at_end = 1;
 	i = 1;
-	if (str_split[1] && ft_strcmp(str_split[1], "-n") == 0)
+	while (str_split[i] && ft_strcmp(str_split[i], "-n") == 0)
 	{
 		new_line_at_end = 0;
-		i = 2;
+		i++;
 	}
 	while (str_split[i])
 	{
 		ft_putstr_fd(str_split[i], STDOUT_FILENO);
-		ft_putchar_fd(' ', STDOUT_FILENO);
+		if (str_split[i + 1])
+			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
 	if (new_line_at_end)
