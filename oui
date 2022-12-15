@@ -1,7 +1,1 @@
-Filesystem   512-blocks      Used  Available Capacity iused      ifree %iused  Mounted on
-/dev/disk1s5 1951845952 141949432 1680739720     8%  568386 9758661374    0%   /
-devfs               382       382          0   100%     664          0  100%   /dev
-/dev/disk1s1 1951845952 119271144 1680739720     7% 1138930 9758090830    0%   /System/Volumes/Data
-/dev/disk1s4 1951845952   8390696 1680739720     1%       2 9759229758    0%   /private/var/vm
-map auto_nfs          0         0          0   100%       0          0  100%   /System/Volumes/Data/sgoinfre
-/dev/disk2     10485760   9366784    1118976    90%   59470 4294907809    0%   /Users/aguemazi
+salur

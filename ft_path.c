@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 18:16:46 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/15 15:42:08 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,12 @@ char	*ft_get_path(char **command_split, char *env[], char *variable)
 	return (path);
 }
 
-int ft_exec_path(char **command_split, char **env[])
+int	ft_exec_path(char **command_split, char **env[])
 {
 	char	*pathname;
 	int		status;
-	// int		status; 
 	pid_t	pid;
-	
+
 	if (!command_split)
 	{
 		ft_putstr_fd("commande vide\n",2);
@@ -70,16 +69,27 @@ int ft_exec_path(char **command_split, char **env[])
 	if (!ft_strrchr(command_split[0],'/'))
 	{
 		pathname = ft_get_path(command_split, *env, "PATH");
+		if (!pathname)
+		{
+			ft_putstr_fd("Minishell: ",2);
+			ft_putstr_fd(command_split[0],2);
+			ft_putstr_fd(" : No such file or directory",2);
+			ft_putstr_fd("\n",2);
+			LAST_RETURN = 127;
+			return (-1);
+		}
 	}
 	else
 	{
 		pathname = ft_create_str_copy(command_split[0], 0);
 	}
-	if (access(pathname, X_OK) == -1 || pathname == NULL)
+	if ( pathname == NULL || access(pathname, X_OK) == -1)
 	{
 		ft_putstr_fd("Minishell: command not found: ",2);
 		ft_putstr_fd(command_split[0],2);
 		ft_putstr_fd("\n",2);
+		LAST_RETURN = 127;
+		free(pathname);
 		return (-2); // faudra tous free
 	}
 	pid = fork();
@@ -87,13 +97,14 @@ int ft_exec_path(char **command_split, char **env[])
 	{
 		ft_putstr_fd("Minishell: ft_exec_path: crash fork ",2);
 		ft_putstr_fd("\n",2);
-		//erreur
+		free(pathname);
+		LAST_RETURN = 11;
 		return (-3); // faudra tous free
 	}
 	else if (pid == 0)
 	{
 		usleep(10);
-		execve(pathname, command_split, *env);
+		LAST_RETURN = execve(pathname, command_split, *env);
 	}
 	else
 	{

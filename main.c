@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 18:15:17 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/15 17:21:32 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,26 +41,26 @@ char	*ft_create_str_copy(char *src, int n)
 
 int exec_command(char **cmd, char ***env_copy)
 {
-	if (ft_strcmp(cmd[0], "pwd") == 0) // qund PWD est unset ca detruis OLDPWD ?
+	if (ft_strcmp(cmd[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd[0], "cd") == 0)
 		LAST_RETURN = ft_cd(cmd, env_copy);
 	else if (ft_strcmp(cmd[0], "env") == 0)
-		ft_print_env(env_copy);// valeur de retour last_return
+		ft_print_env(env_copy);
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		LAST_RETURN = ft_export_variable_env(env_copy, cmd[1]); // verifier que la valeur est presente
+		LAST_RETURN = ft_export_variable_env(env_copy, cmd[1]);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
-		ft_unset_variable_env(env_copy, cmd[1]);// valeur de retour last_return
+		ft_unset_variable_env(env_copy, cmd[1]);
 	else if (ft_strcmp(cmd[0], "echo") == 0)	
-		ft_echo(cmd); // valeur de retour last_return
+		ft_echo(cmd);
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 	{
 		ft_putstr_fd("exit\n", 2);
-		exit(LAST_RETURN); // valeur de retour last_return
+		exit(LAST_RETURN);
 	}
 	else
-		LAST_RETURN = ft_exec_path(cmd, env_copy); // gerer le last return
-	return 0;
+		LAST_RETURN = ft_exec_path(cmd, env_copy);
+	return (0);
 }
 
 int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
@@ -74,7 +74,7 @@ int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
 	close(inputfd);
 	dup2(fd[1], STDOUT_FILENO);
 	if(redirections(cmd, env_copy) ==-1)
-		return -4; // je sais pas quoi retourner
+		return -4;
 	close(fd[1]);
 	return (fd[0]);
 }
@@ -94,15 +94,15 @@ int	ft_pipe_last(char *cmd, int inputfd, char ***env_copy)
 
 void lire_pipe(int pipe_fd)
 {
-	char      buffer[1024];
-      int       ret;
+	char	buffer[1024];
+	int		ret;
 
-      while ((ret = read(pipe_fd, buffer, 1023)) != 0)
-      {
-        fprintf(stderr,"%d\n", ret);
-        buffer[ret] = 0;
-        fprintf(stderr,"%s\n", buffer);
-      }
+	while ((ret = read(pipe_fd, buffer, 1023)) != 0)
+	{
+		fprintf(stderr,"%d\n", ret);
+		buffer[ret] = 0;
+		fprintf(stderr,"%s\n", buffer);
+	}
 }
 
 int	ft_isforbiden(char c)
@@ -112,18 +112,14 @@ int	ft_isforbiden(char c)
 	return (0);
 }
 
-int	check_str(char *str)
+int	check_str2(char *str)
 {
-	int		i;
-	int		check;
+	int		i;	
 
 	i = 0;
-	if (!str[i])
-	{
-		return (-1);
-	}
 	while (str[i])
 	{
+		//checkstr2
 		if (str[i] == '|')
 		{
 			i++;
@@ -139,19 +135,16 @@ int	check_str(char *str)
 		}
 		i++;
 	}
+	return (0);
+}
+
+int	check_str3(char *str)
+{
+	int		i;
+	int		check;
+
 	i = 0;
-	while (str[i] && str[i] == ' ')
-		i++;
-	if (!str[i])
-		return (-1);
-	if (ft_isalnum(str[i]) == -1 && str[i] != '/' && str[i] != '\'' && str[i] != '\"' && str[i] != '.')
-	{
-		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
-		return (-1);
-	}
 	check = 0;
-	while (str[i] && ft_isalnum(str[i]) == 0)
-		i++;
 	if (str[i])
 	{
 		while (str[i] && ft_isforbiden(str[i]) == -1)
@@ -165,7 +158,33 @@ int	check_str(char *str)
 		if (check == 0)
 			return (-1);
 	}
-	return (000);
+	return (0);
+}
+
+int	check_str(char *str)
+{
+	int		i;
+
+	i = 0;
+	if (!str[i])
+	{
+		return (-1);
+	}
+	if (check_str2(str) == -1)
+		return (-1);
+	i = 0;
+	while (str[i] && str[i] == ' ')
+		i++;
+	if (!str[i])
+		return (-1);
+	if (ft_isalnum(str[i]) == -1 && str[i] != '/' && str[i] != '\'' && str[i] != '\"' && str[i] != '.')
+	{
+		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
+		return (-1);
+	}
+	if (check_str3(str) == -1)
+		return (-1);
+	return (0);
 }
 
 int	check_empty(char *str)
@@ -184,77 +203,102 @@ int	check_empty(char *str)
 
 /*
 bugs :
-Minishell :			df > test
-					ls > test
-					verifier au'il y aun PATH si il est unset
+Minishell :	
 a faire : verifier les last return de execve
 
 */
+
+void	no_name(char *str, char ***env_copy, int saved_std[2])
+{
+	int		i;
+	int		fd;
+	char	**tab_pipe;
+
+	// saved_stdout = dup(1);
+	// saved_stdin = dup(0);
+	i = 0;
+	tab_pipe = ft_split_pipe(str);
+	fd = STDIN_FILENO;
+	while (tab_pipe && tab_pipe[i])
+	{
+		// fprintf(stderr,"ehoohohohohoh %s\n",tab_pipe[i]);
+		usleep(10);
+		if (tab_pipe[i + 1])
+		{
+			dup2(saved_std[1], STDOUT_FILENO);
+			fd = ft_pipe(tab_pipe[i], fd, env_copy);
+			dup2(saved_std[0], STDIN_FILENO);
+		}	
+		else
+		{
+			dup2(saved_std[1], STDOUT_FILENO);
+			ft_pipe_last(tab_pipe[i], fd, env_copy);
+		}
+		i++;
+	}
+	close (fd);
+	if (tab_pipe)
+		ft_free_doublechar(&tab_pipe);
+	// dup2(saved_std[0], STDIN_FILENO);
+}
 
 int	main(int argc, char **argv, char **env)
 {
 	char	**env_copy;
 	int		last_return;
 	char	*str;
-	char	**tab_pipe;
-	char	*buffer;
-	int		fd;	
+	// char	**tab_pipe;
+	// int		fd;
 	int		i;
-	int		saved_stdout;
-	int		saved_stdin;
+	int		saved_std[2];
+	// int		saved_stdin;
+	// int		saved_stdout;
 
 	(void) argc;
 	(void) argv;
 	env_copy = ft_copy_env(env);
-	saved_stdout = dup(1);
-	saved_stdin = dup(0);
+	saved_std[1] = dup(1);
+	saved_std[0] = dup(0);
 	last_return = 0;
-	buffer = NULL;
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);
 	while (1)
 	{
-		// fprintf(stderr,"test\n");
 		str = readline("Minishell : ");
 		if (!str)
-		{
 			return (0);
-		}
 		if (check_empty(str) == -1)
 			continue ;
-		// fprintf(stderr,"test\n");
 		usleep(20);
 		add_history(str);
-		str = test(str, env_copy);
+		str = translate_variable(str, env_copy);
 		i = 0;
-		tab_pipe = ft_split_pipe(str);
-		fd = STDIN_FILENO;
-		free(str);
+		// tab_pipe = ft_split_pipe(str);
+		// fd = STDIN_FILENO;
 		if (check_str(str) == -1)
-		{
 			continue;
-		}
-		while (tab_pipe && tab_pipe[i])
-		{
-			// tab_pipe[i] = test(tab_pipe[i], env_copy); // renomme les variable selon "" '
-			if (tab_pipe[i + 1])
-			{
-				dup2(saved_stdout, STDOUT_FILENO);
-				fd = ft_pipe(tab_pipe[i], fd, &env_copy);
-				dup2(saved_stdin, STDIN_FILENO);
-			}	
-			else
-			{
-				// lire_pipe(fd);
-				dup2(saved_stdout, STDOUT_FILENO);
-				ft_pipe_last(tab_pipe[i], fd, &env_copy);
-			}
-			i++;
-		}
-		close (fd);
-		if (tab_pipe)
-			ft_free_doublechar(&tab_pipe);
-		dup2(saved_stdin, STDIN_FILENO);
+		no_name(str, &env_copy, saved_std);
+		free(str);
+		// while (tab_pipe && tab_pipe[i])
+		// {
+		// 	if (tab_pipe[i + 1])
+		// 	{
+		// 		dup2(saved_std[1], STDOUT_FILENO);
+		// 		fd = ft_pipe(tab_pipe[i], fd, &env_copy);
+		// 		dup2(saved_std[0], STDIN_FILENO);
+		// 	}	
+		// 	else
+		// 	{
+		// 		dup2(saved_std[1], STDOUT_FILENO);
+		// 		ft_pipe_last(tab_pipe[i], fd, &env_copy);
+		// 	}
+		// 	i++;
+		// }
+		// close (fd);
+		// if (tab_pipe)
+		// 	ft_free_doublechar(&tab_pipe);
+		// dup2(saved_std[0], STDIN_FILENO);
+		dup2(saved_std[0], STDIN_FILENO);
 	}
 	return (0);
 }

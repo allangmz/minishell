@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 14:03:02 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/15 15:45:42 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,12 +217,38 @@ int	ft_size_variable(char *str)
 	return (i);
 }
 
+static void ft_gestion_double_quote(char **str, int *i, char *env[])
+{
+	char	*char_last_return;
+
+	(*i) += 1;
+	while ((*str)[(*i)] && (*str)[(*i)] != '\"')
+	{
+		if ((*str)[(*i)] && (*str)[(*i)] == '$')
+		{
+			if ((*str)[(*i)] && (*str)[(*i) + 1] == '?')
+			{
+				char_last_return = ft_itoa(LAST_RETURN);
+				(*str) = ft_expand_last_return((*str), char_last_return, (*i), ft_strlen(char_last_return));
+			}
+			else if ((*str)[(*i)] && (ft_isalnum((*str)[(*i) + 1]) || (*str)[(*i) + 1] == '_'))
+			{
+				(*str) = ft_expand_string_variables((*str), env, (*i), ft_size_variable((*str) + (*i)));
+			}
+		}
+		else
+			(*i) += 1;
+	}
+	(*i) += 1;
+	return ;
+}
+
 // traduit les variables par leur traduction
-// traduit les variables par leur traduction
-char	*test(char *str, char *env[])
+char	*translate_variable(char *str, char *env[])
 {
 	int		i;
 	char	*char_last_return;
+
 	i = 0;
 	while (str[i])
 	{
@@ -234,25 +260,7 @@ char	*test(char *str, char *env[])
 			break ;
 		if (str[i] && str[i] == '\"')
 		{
-			i++;
-			while (str[i] &&str[i] != '\"')
-			{
-				if (str[i] &&str[i] == '$')
-				{
-					if (str[i] &&str[i + 1] == '?')
-					{
-						char_last_return = ft_itoa(LAST_RETURN);
-						str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
-					}
-					else if (str[i] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
-					{
-						str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
-					}
-				}
-				else
-					i++;
-			}
-			i++;
+			ft_gestion_double_quote(&str, &i, env);
 		}
 		while (str[i] && !((str[i] >= 9 && str[i] <= 13) || ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')) && str[i] != '\"' && str[i] != '\'')
 		{
@@ -282,18 +290,3 @@ char	*test(char *str, char *env[])
 	}
 	return (str);
 }
-
-// int main(int argc, char **argv,char *env[])
-// {
-// 	char	*test1 = "echo 'test'$HOME";
-// 	char	**oi;
-
-// 	(void) argv;
-// 	(void) argc;
-// 	test1 = test(test1, env, last_return);
-// 	oi = ft_split_minishell(test1);
-// 	ft_exec_path(oi, env);
-// 	ft_free_doublechar(&oi);
-// 	free(test1);
-// 	system("leaks minishel");
-// }
