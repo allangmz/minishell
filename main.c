@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/15 17:21:32 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/16 17:43:42 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,36 +59,33 @@ int exec_command(char **cmd, char ***env_copy)
 		exit(LAST_RETURN);
 	}
 	else
+	{
+		usleep(10);
 		LAST_RETURN = ft_exec_path(cmd, env_copy);
+	}
 	return (0);
 }
 
 int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
 {
 	int		fd[2];
-	char	*buffer;
 
 	pipe(fd);
-	buffer = NULL;
 	dup2(inputfd, STDIN_FILENO);
-	close(inputfd);
 	dup2(fd[1], STDOUT_FILENO);
-	if(redirections(cmd, env_copy) ==-1)
+	if(redirections(cmd, env_copy) == -1)
 		return -4;
 	close(fd[1]);
+	close(inputfd);
 	return (fd[0]);
 }
 
 int	ft_pipe_last(char *cmd, int inputfd, char ***env_copy)
 {
-	int		fd[2];
-	char	*buffer;
-
-	buffer = NULL;
-	close(fd[1]);
-	close(fd[0]);
+	usleep(10);
 	dup2(inputfd, STDIN_FILENO);
 	redirections(cmd, env_copy);
+	close(inputfd);
 	return (0);
 }
 
@@ -99,9 +96,7 @@ void lire_pipe(int pipe_fd)
 
 	while ((ret = read(pipe_fd, buffer, 1023)) != 0)
 	{
-		fprintf(stderr,"%d\n", ret);
 		buffer[ret] = 0;
-		fprintf(stderr,"%s\n", buffer);
 	}
 }
 
@@ -208,51 +203,76 @@ a faire : verifier les last return de execve
 
 */
 
-void	no_name(char *str, char ***env_copy, int saved_std[2])
+void	your_name(char **tab_pipe, int fd, int saved_std[2], char ***env_copy)
 {
 	int		i;
-	int		fd;
-	char	**tab_pipe;
 
-	// saved_stdout = dup(1);
-	// saved_stdin = dup(0);
 	i = 0;
-	tab_pipe = ft_split_pipe(str);
-	fd = STDIN_FILENO;
 	while (tab_pipe && tab_pipe[i])
 	{
-		// fprintf(stderr,"ehoohohohohoh %s\n",tab_pipe[i]);
 		usleep(10);
 		if (tab_pipe[i + 1])
 		{
 			dup2(saved_std[1], STDOUT_FILENO);
 			fd = ft_pipe(tab_pipe[i], fd, env_copy);
 			dup2(saved_std[0], STDIN_FILENO);
-		}	
+		}
 		else
 		{
+			// lire_pipe(fd);
 			dup2(saved_std[1], STDOUT_FILENO);
 			ft_pipe_last(tab_pipe[i], fd, env_copy);
+			close(fd);
 		}
 		i++;
 	}
+}
+
+void	no_name(char *str, char ***env_copy, int saved_std[2])
+{
+	int		i;
+	int		fd;
+	char	**tab_pipe;
+
+	i = 0;
+	tab_pipe = ft_split_pipe(str);
+	fd = dup(1);
+	your_name(tab_pipe, fd, saved_std, env_copy);
 	close (fd);
 	if (tab_pipe)
 		ft_free_doublechar(&tab_pipe);
-	// dup2(saved_std[0], STDIN_FILENO);
+}
+
+int	ft_minishell(int saved_std[2], char ***env_copy)
+{
+	char	*str;
+
+	while (1)
+	{
+		dup2(saved_std[1], STDOUT_FILENO);
+		dup2(saved_std[0], STDIN_FILENO);
+		str = readline("Minishell : ");
+		if (!str)
+			return (0);
+		if (check_empty(str) == -1)
+			continue ;
+		usleep(20);
+		add_history(str);
+		str = translate_variable(str, *env_copy);
+		if (check_str(str) == -1)
+			continue;
+		no_name(str, env_copy, saved_std);
+		free(str);
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	char	**env_copy;
 	int		last_return;
-	char	*str;
-	// char	**tab_pipe;
-	// int		fd;
-	int		i;
+	// char	*str;
 	int		saved_std[2];
-	// int		saved_stdin;
-	// int		saved_stdout;
 
 	(void) argc;
 	(void) argv;
@@ -262,45 +282,23 @@ int	main(int argc, char **argv, char **env)
 	last_return = 0;
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);
-	while (1)
-	{
-		str = readline("Minishell : ");
-		if (!str)
-			return (0);
-		if (check_empty(str) == -1)
-			continue ;
-		usleep(20);
-		add_history(str);
-		str = translate_variable(str, env_copy);
-		i = 0;
-		// tab_pipe = ft_split_pipe(str);
-		// fd = STDIN_FILENO;
-		if (check_str(str) == -1)
-			continue;
-		no_name(str, &env_copy, saved_std);
-		free(str);
-		// while (tab_pipe && tab_pipe[i])
-		// {
-		// 	if (tab_pipe[i + 1])
-		// 	{
-		// 		dup2(saved_std[1], STDOUT_FILENO);
-		// 		fd = ft_pipe(tab_pipe[i], fd, &env_copy);
-		// 		dup2(saved_std[0], STDIN_FILENO);
-		// 	}	
-		// 	else
-		// 	{
-		// 		dup2(saved_std[1], STDOUT_FILENO);
-		// 		ft_pipe_last(tab_pipe[i], fd, &env_copy);
-		// 	}
-		// 	i++;
-		// }
-		// close (fd);
-		// if (tab_pipe)
-		// 	ft_free_doublechar(&tab_pipe);
-		// dup2(saved_std[0], STDIN_FILENO);
-		dup2(saved_std[0], STDIN_FILENO);
-	}
-	return (0);
+	// while (1)
+	// {
+	// 	str = readline("Minishell : ");
+	// 	if (!str)
+	// 		return (0);
+	// 	if (check_empty(str) == -1)
+	// 		continue ;
+	// 	usleep(20);
+	// 	add_history(str);
+	// 	str = translate_variable(str, env_copy);
+	// 	if (check_str(str) == -1)
+	// 		continue;
+	// 	no_name(str, &env_copy, saved_std);
+	// 	free(str);
+	// 	dup2(saved_std[0], STDIN_FILENO);
+	// }
+	return (ft_minishell(saved_std, &env_copy));
 }
 
 // rajouter des protection sur toute les fonctions + les retour pour $? de chaque fonction + verifier que tout soit free au bon moment

@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/14 18:14:20 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/16 17:49:28 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,49 +22,6 @@
 // #include <readline/readline.h>
 // #include <readline/history.h>
 // #include </Users/tkempf-e/.brew/Cellar/readline/8.2.1/include/readline/readline.h>
-
-
-
-char	*ft_strjoin_test(char *s1, char *s2)
-{
-	char	*join;
-	int		i;
-	int		j;
-
-	j = 0;
-	i = 0;
-	sleep(1);
-	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!join)
-		return (NULL);
-	while (s1 && s1[i])
-	{
-		join[i] = *(char *)(s1 + i);
-		i++;
-	}
-	while (s2[j])
-	{
-		join[i + j] = *(char *)(s2 + j);
-		j++;
-	}
-	join[i + j] = '\0';
-	free(s1); // faut surement free
-	return (join);
-}
-
-// int	ft_strcmp(char *str1, char *str2)
-// {
-// 	int		i;
-// 	if (!str1 && !str2)
-// 		return (0);
-// 	i = 0;
-// 	while (str1[i] && str2[i] && str1[i] == str2[i])
-// 		i++;
-// 	if (!str1[i] && !str2[i])
-// 		return (0);
-// 	else
-// 		return (-1);
-// }
 
 void	enter_redirect(char *entry, char *cmd)
 {
@@ -135,44 +92,8 @@ int	redirection_counter(char *str)
 	return (counter);
 }
 
-char	*filer_the_creator(char *str, int redirect_nbr)
-{
-	(void) redirect_nbr; // pourquoi cette varible existe ?
-	int		i;
-	char	**no_redirect;
-	char	*file;
-
-	no_redirect = ft_split(str, '>');
-	i = 0;
-	while (no_redirect[i])// enlever les ' ' et '>' en trop
-	{
-		file = ft_strtrim(no_redirect[i], " ><");
-		free (no_redirect[i]);
-		no_redirect[i] = file;
-		i++;
-	}
-	i = 1;
-	while (no_redirect[i] && no_redirect[i + 1])
-	{
-		open(no_redirect[i], O_CREAT | O_RDWR , 0644);
-		i++;
-	}
-	return (ft_strjoin(no_redirect[0], ft_strjoin(" > ", no_redirect[i])));
-}
-
 // gerer les redirections multiples
 // return string without repetition of redirection
-char	*pre_redirect(char *str)
-{
-	char	*new_str;
-	int		redirect_nbr;
-
-	redirect_nbr = redirection_counter(str);
-	if (redirect_nbr < 2)
-		return (str);
-	new_str = filer_the_creator(str, redirect_nbr);
-	return (new_str);
-}
 
 void	exit_append_redirect(char *exit, char *cmd)
 {
@@ -370,7 +291,8 @@ void	delete_redirection_to_str(char **str)
 				limit[1] = i;
 				// fprintf(stderr, "SUPPR limit[1] %d %c\n", limit[1], (*str)[limit[1]]);
 				fprintf(stderr, "TEST limit[1] - limit[0] %d\n", limit[1] - limit[0]);
-				(*str) = ft_delete_nchar((*str), limit[0], limit[1] - limit[0]); //je sai pas si ca marche
+				(*str) = ft_delete_nchar(str, limit[0], limit[1] - limit[0]); //je sai pas si ca marche
+				fprintf(stderr, "TEST limit[1] - limit[0] %d\n", limit[1] - limit[0]);
 				return ;
 			}
 		}
@@ -432,10 +354,10 @@ void	redirect_options(char *str, char ***envp)
 	cmd_split = ft_split_minishell(str, ' ');
 	exec_command(cmd_split, envp);
 	ft_free_doublechar(&cmd_split);
+	close(STDOUT_FILENO);
+	close(STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stdin, STDIN_FILENO);
-	// close(STDOUT_FILENO);
-	// close(STDIN_FILENO);
 }
 
 char	*ft_cmd(char *str, int i, int *ptrj)
@@ -458,7 +380,10 @@ int	redirections(char *cmd, char ***envp)
 
 	i = redirection_checker(cmd);
 	if (ft_test(cmd, i) == -1)
+	{
+
 		return (-1);
+	}
 	if (i == -1)
 	{
 		cmd_split = ft_split_minishell(cmd, ' ');
@@ -466,9 +391,6 @@ int	redirections(char *cmd, char ***envp)
 		ft_free_doublechar(&cmd_split);
 		return (0);
 	}
-	// new_str = pre_redirect(cmd);
-	// cmd = ft_cmd(new_str, i, &j);
-	// file = ft_file(new_str, i, &j);
-	redirect_options(cmd,envp);
+	redirect_options(cmd, envp);
 	return (0);
 }

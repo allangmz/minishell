@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_delete_nchar.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:47:15 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/12 16:35:34 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/16 15:28:23 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*delete_not_until_the_end(int newsize, char *newstr, char *str
 	begin = index of the word to be deleted
 	n = number of char to delete
 */
-char	*ft_delete_nchar(char *str, int begin, int n)
+char	*ft_delete_nchar(char **str, int begin, int n)
 {
 	int		size;
 	char	*newstr;
@@ -82,15 +82,15 @@ char	*ft_delete_nchar(char *str, int begin, int n)
 		printf("ft_delete_nchar: begin or n incorrect\n");
 		return (NULL);
 	}
-	size = ft_strlen(str);
+	size = ft_strlen(*str);
 	if (size < limit[1])
 	{
-		newstr = delete_until_the_end(size - (size - begin), newstr, str);
+		newstr = delete_until_the_end(size - (size - begin), newstr, *str);
 	}
 	else
 	{
-		newstr = delete_not_until_the_end(size - n, newstr, str, limit);
+		newstr = delete_not_until_the_end(size - n, newstr, *str, limit);
 	}
-	// free(str); // pas alloué
+	// free(*str); // pas alloué
 	return (newstr);
 }

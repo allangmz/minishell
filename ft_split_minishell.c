@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/15 15:45:42 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/16 15:15:49 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	gestion_quote_nbwords(char *s, size_t *i)
 		}
 		*i += 1;
 	}
-	if (s[*i] && s[*i] == '\'')
+	else if (s[*i] && s[*i] == '\'')
 	{
 		*i += 1;
 		while (s[*i] && s[*i] != '\'')
@@ -55,12 +55,26 @@ static int	ft_nbwords_minishell(char *s, char sep)
 		gestion_quote_nbwords(s, &i);
 		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 			i++;
-		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep))
+		if (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep || s[i] != '\'' || s[i] != '\"'))
 		{
 			nbline++;
 		}
 	}
 	return (nbline);
+}
+
+void	ft_gestion_quote_malloc_words(char *s, size_t *compt, size_t (*i), char quote)
+{
+	if (s[(*i)] && s[(*i)] == quote)
+	{
+		(*i) += 1;
+		while (s[(*i)] && s[(*i)] != quote)
+		{
+			(*i) += 1;
+			compt += 1;
+		}
+		(*i) += 1;
+	}
 }
 
 char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep)
@@ -79,41 +93,19 @@ char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep)
 	{
 		variable = 0;
 		while (s[i] && (((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep) )
-		{
 			i++;
-		}
-		if (s[i] && s[i] == '\"')
-		{
-			i ++;
-			while (s[i] && s[i] != '\"')
-			{
-				i++;
-				compt++;
-			}
-			i++;
-		}
+		ft_gestion_quote_malloc_words(s, &compt, &i, '\"');
 		while (s[i] && !((s[i] >= 9 && s[i] <= 13) || s[i] == sep) && s[i] != '\"' && s[i] != '\'')
 		{
 			i++;
 			compt++;
 		}
-		if (s[i] == '\'')
-		{
-			i ++;
-			while (s[i] && s[i] != '\'')
-			{
-				i++;
-				compt2++;
-			}
-			i++;
-		}
+		ft_gestion_quote_malloc_words(s, &compt2, &i, '\'');
 		if (compt + compt2 > 0 && ((((s[i] >= 9 && s[i] <= 13) || s[i] == sep) || s[i] == sep)  || !s[i]))
 		{
 			tab[j] = malloc(sizeof(char) * (compt + compt2 + 1));
 			if (!tab[j])
-			{
 				return (NULL); // faut tout free;
-			}
 			tab[j][compt + compt2] = '\0';
 			compt = 0;
 			compt2 = 0;
@@ -140,8 +132,10 @@ char	**ft_malloc_tab2d_minishell(char *s, char sep)
 	tab = (char **)malloc(sizeof(char *) * (nbline + 1));
 	tab[nbline] = NULL;
 	if (!tab)
-		return (0);
+		return (NULL);
 	tab = ft_malloc_words_minishell(s, tab, nbline, sep);
+	if (!tab)
+		return (NULL);
 	return (tab);
 }
 
@@ -174,7 +168,7 @@ char	**ft_split_minishell(char *s, char sep)
 		if (s[i] && s[i] == '\"')
 		{
 			i ++;
-			while (s[i] != '\"')
+			while (s[i] && s[i] != '\"')
 			{
 				tab[index[0]][index[1]] = s[i];
 				i++;
@@ -185,7 +179,7 @@ char	**ft_split_minishell(char *s, char sep)
 		if (s[i] && s[i] == '\'')
 		{
 			i ++;
-			while (s[i] != '\'')
+			while (s[i] && s[i] != '\'')
 			{
 				tab[index[0]][index[1]] = s[i];
 				i++;
@@ -217,74 +211,76 @@ int	ft_size_variable(char *str)
 	return (i);
 }
 
-static void ft_gestion_double_quote(char **str, int *i, char *env[])
+static void ft_replace_variable(char **str, int *i, char *env[])
 {
 	char	*char_last_return;
 
-	(*i) += 1;
-	while ((*str)[(*i)] && (*str)[(*i)] != '\"')
+	if ((*str)[(*i)] && (*str)[(*i) + 1] == '?')
+	{
+		char_last_return = ft_itoa(LAST_RETURN);
+		(*str) = ft_expand_last_return(str, char_last_return,
+				(*i), ft_strlen(char_last_return));
+	}
+	else if ((*str)[(*i)] && (ft_isalnum((*str)[(*i) + 1]) == 0
+				|| (*str)[(*i) + 1] == '_'))
+	{
+		(*str) = ft_expand_string_variables(str, env,
+				(*i), ft_size_variable((*str) + (*i)));
+	}
+}
+
+static void ft_gestion_double_quote(char **str, int *i, char *env[])
+{
+	if ((*str)[(*i)] && (*str)[(*i)] == '\"')
+	{	
+		(*i) += 1;
+		while ((*str)[(*i)] && (*str)[(*i)] != '\"')
+		{
+			if ((*str)[(*i)] && (*str)[(*i)] == '$')
+			{
+				ft_replace_variable(str, i, env);
+			}
+			(*i) += 1;
+		}
+		(*i) += 1;
+	}
+	return ;
+}
+
+static void ft_gestion_any_quote(char **str, int *i, char *env[])
+{
+	while ((*str)[(*i)] && !(((*str)[(*i)] >= 9 && (*str)[(*i)] <= 13)
+		|| (((*str)[(*i)] >= 9 && (*str)[(*i)] <= 13)
+				|| (*str)[(*i)] == ' ')) && (*str)[(*i)] != '\"'
+					&& (*str)[(*i)] != '\'')
 	{
 		if ((*str)[(*i)] && (*str)[(*i)] == '$')
 		{
-			if ((*str)[(*i)] && (*str)[(*i) + 1] == '?')
-			{
-				char_last_return = ft_itoa(LAST_RETURN);
-				(*str) = ft_expand_last_return((*str), char_last_return, (*i), ft_strlen(char_last_return));
-			}
-			else if ((*str)[(*i)] && (ft_isalnum((*str)[(*i) + 1]) || (*str)[(*i) + 1] == '_'))
-			{
-				(*str) = ft_expand_string_variables((*str), env, (*i), ft_size_variable((*str) + (*i)));
-			}
+			ft_replace_variable(str, i, env);
 		}
-		else
-			(*i) += 1;
+		(*i) += 1;
 	}
-	(*i) += 1;
-	return ;
 }
 
 // traduit les variables par leur traduction
 char	*translate_variable(char *str, char *env[])
 {
 	int		i;
-	char	*char_last_return;
 
 	i = 0;
 	while (str[i])
 	{
 		while (str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == ' '))
-		{
 			i++;
-		}
 		if (str[i] == '\0')
 			break ;
-		if (str[i] && str[i] == '\"')
-		{
-			ft_gestion_double_quote(&str, &i, env);
-		}
-		while (str[i] && !((str[i] >= 9 && str[i] <= 13) || ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')) && str[i] != '\"' && str[i] != '\'')
-		{
-			if (str[i] &&str[i] == '$')
-			{
-				if (str[i] && str[i + 1] == '?')
-				{
-					char_last_return = ft_itoa(LAST_RETURN);
-					str = ft_expand_last_return(str, char_last_return, i, ft_strlen(char_last_return));
-				}
-				else if (str[i] && (ft_isalnum(str[i + 1]) == 0 || str[i + 1] == '_'))
-				{
-					str = ft_expand_string_variables(str, env, i, ft_size_variable(str + i));
-				}
-			}
-			i++;
-		}
+		ft_gestion_double_quote(&str, &i, env);
+		ft_gestion_any_quote(&str, &i, env);
 		if (str[i] && str[i] == '\'')
 		{
 			i++;
 			while (str[i] && str[i] != '\'')
-			{
 				i++;
-			}
 			i++;
 		}
 	}
