@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 16:24:48 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:52:09 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ int	exec_command(char **cmd, char ***env_copy)
 	if (ft_strcmp(cmd[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd[0], "cd") == 0)
-		LAST_RETURN = ft_cd(cmd, env_copy);
+		g_last_return = ft_cd(cmd, env_copy);
 	else if (ft_strcmp(cmd[0], "env") == 0)
 		ft_print_env(env_copy);
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		LAST_RETURN = ft_export_variable_env(env_copy, cmd[1]);
+		g_last_return = ft_export_variable_env(env_copy, cmd[1]);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 		ft_unset_variable_env(env_copy, cmd[1]);
 	else if (ft_strcmp(cmd[0], "echo") == 0)
@@ -48,12 +48,12 @@ int	exec_command(char **cmd, char ***env_copy)
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 	{
 		ft_putstr_fd("exit\n", 2);
-		exit(LAST_RETURN);
+		exit(g_last_return);
 	}
 	else
 	{
 		usleep(10);
-		LAST_RETURN = ft_exec_path(cmd, env_copy);
+		g_last_return = ft_exec_path(cmd, env_copy);
 	}
 	return (0);
 }

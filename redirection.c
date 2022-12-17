@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:57:32 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 18:13:17 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 19:04:40 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,49 +289,67 @@ void	delete_redirection_to_str(char **str)
 	}
 }
 
+static void	exits(t_redirection redirection, char *str, int saved_std[2])
+{
+	if (redirection.redirection == 2)
+	{
+		dup2(saved_std[1], STDOUT_FILENO);
+		exit_append_redirect(redirection.file, str);
+	}
+	else if (redirection.redirection == 1)
+	{
+		dup2(saved_std[1], STDOUT_FILENO);
+		exit_redirect(redirection.file);
+	}
+}
+
+static void	opens(char *str, t_redirection	redirection, int saved_std[2])
+{
+	if (redirection.redirection == 4)
+	{
+		dup2(saved_std[0], STDIN_FILENO);
+		here_doc(str, redirection.file);
+	}
+	else if (redirection.redirection == 3)
+	{
+		dup2(saved_std[0], STDIN_FILENO);
+		enter_redirect(redirection.file, str);
+	}
+}
+
+static int	loop_redirection(char **str, int saved_std[2], int *i)
+{
+	int				tmp;
+	t_redirection	redirection;
+
+	tmp = redirection_checker((*str) + (*i));
+	if (tmp == -1)
+		return (-1);
+	(*i) = 0;
+	redirection = ft_file((*str), (*i));
+	delete_redirection_to_str(str);
+	if (!redirection.file)
+		return (-1);
+	exits(redirection, (*str), saved_std);
+	opens((*str), redirection, saved_std);
+	if (redirection.file)
+		free(redirection.file);
+	return (0);
+}
+
 void	redirect_options(char *str, char ***envp)
 {
-	int				i;
-	int				saved_std[2];
-	char			**cmd_split;
-	t_redirection	redirection;
-	int				tmp;
+	int		saved_std[2];
+	char	**cmd_split;
+	int		i;
 
+	i = 0;
 	saved_std[1] = dup(STDOUT_FILENO);
 	saved_std[0] = dup(STDIN_FILENO);
-	i = 0;
-	while (str[i])
+	while (1)
 	{
-		tmp = redirection_checker(str + i);
-		if (tmp == -1)
+		if (loop_redirection(&str, saved_std, &i) == -1)
 			break ;
-		i = 0;
-		redirection = ft_file(str, i);
-		delete_redirection_to_str(&str);
-		if (!redirection.file)
-			break ;
-		if (redirection.redirection == 2)
-		{
-			dup2(saved_std[1], STDOUT_FILENO);
-			exit_append_redirect(redirection.file, str);
-		}
-		else if (redirection.redirection == 1)
-		{
-			dup2(saved_std[1], STDOUT_FILENO);
-			exit_redirect(redirection.file);
-		}
-		else if (redirection.redirection == 4)
-		{
-			dup2(saved_std[0], STDIN_FILENO);
-			here_doc(str, redirection.file);
-		}
-		else if (redirection.redirection == 3)
-		{
-			dup2(saved_std[0], STDIN_FILENO);
-			enter_redirect(redirection.file, str);
-		}
-		if (redirection.file)
-			free(redirection.file);
 	}
 	cmd_split = ft_split_minishell(str, ' ');
 	exec_command(cmd_split, envp);

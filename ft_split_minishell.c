@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 18:07:03 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:59:55 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ static void	ft_replace_variable(char **str, int *i, char *env[])
 
 	if ((*str)[(*i)] && (*str)[(*i) + 1] == '?')
 	{
-		char_last_return = ft_itoa(LAST_RETURN);
+		char_last_return = ft_itoa(g_last_return);
 		(*str) = ft_expand_last_return(str, char_last_return,
 				(*i), ft_strlen(char_last_return));
 	}

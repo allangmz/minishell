@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 17:21:13 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:46:19 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <readline/history.h>
 # include <dirent.h>
 
-int	LAST_RETURN;
+int g_last_return;
 
 typedef struct s_redirection
 {

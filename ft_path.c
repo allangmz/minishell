@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 13:54:23 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 16:47:54 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:52:22 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*patate_name(char **command_split, char **env[])
 			ft_putstr_fd(command_split[0], 2);
 			ft_putstr_fd(" : No such file or directory", 2);
 			ft_putstr_fd("\n", 2);
-			LAST_RETURN = 127;
+			g_last_return = 127;
 		}
 	}
 	else
@@ -88,13 +88,13 @@ int	fourchette(char	**pathname, char **command_split, char **env[])
 		ft_putstr_fd("Minishell: ft_exec_path: crash fork ", 2);
 		ft_putstr_fd("\n", 2);
 		free(pathname);
-		LAST_RETURN = 11;
+		g_last_return = 11;
 		return (-3);
 	}
 	else if (pid == 0)
 	{
 		usleep(10);
-		LAST_RETURN = execve(*pathname, command_split, *env);
+		g_last_return = execve(*pathname, command_split, *env);
 	}
 	return (0);
 }
@@ -106,7 +106,7 @@ int	let_me_in(char **pathname, char **command_split)
 		ft_putstr_fd("Minishell: command not found: ", 2);
 		ft_putstr_fd(command_split[0], 2);
 		ft_putstr_fd("\n", 2);
-		LAST_RETURN = 127;
+		g_last_return = 127;
 		free(pathname);
 		return (-2);
 	}
