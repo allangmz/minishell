@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/16 15:18:04 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:06:47 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,14 @@ char	*ft_add_variable(char **str, int i, int j, char *env[])
 /*	n = number of char to browse 
 	n < 0 -> all the string
 */
-char	*ft_expand_string_variables(char **str, char *env[], size_t begin, size_t n)
+char	*ft_expand_string_variables(char **str,
+	char *env[], size_t begin, size_t n)
 {
 	size_t	i;
 	size_t	j;
 
 	if (begin < 0)
-	{
 		return ((*str));
-	}
 	i = begin;
 	while ((*str)[i] && i < begin + n)
 	{
@@ -65,7 +64,8 @@ char	*ft_expand_string_variables(char **str, char *env[], size_t begin, size_t n
 		{
 			i++;
 			j = 0;
-			while ((*str)[i] && (ft_isalnum((*str)[i]) == 0 || (*str)[i] == '_'))
+			while ((*str)[i] && (ft_isalnum((*str)[i]) == 0
+					|| (*str)[i] == '_'))
 			{
 				i++;
 				j++;
@@ -85,7 +85,8 @@ char	*ft_add_last_return(char **str, int i, char *char_last_return)
 	return (*str);
 }
 
-char	*ft_expand_last_return(char **str, char *char_last_return, size_t begin, size_t n)
+char	*ft_expand_last_return(char **str, char *char_last_return,
+		size_t begin, size_t n)
 {
 	size_t	i;
 

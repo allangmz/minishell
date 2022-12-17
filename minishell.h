@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/16 15:17:42 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:21:13 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <dirent.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <signal.h>
+# include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <dirent.h>
 
-int LAST_RETURN;
+int	LAST_RETURN;
 
 typedef struct s_redirection
 {

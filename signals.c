@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:23:55 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/07 11:27:27 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:09:37 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	handle_signals(int signo)
 {
-	if (signo == SIGINT)//ctrl-c
+	if (signo == SIGINT)
 	{
 		printf("\n");
 		rl_on_new_line();
-		// rl_replace_line("", 0); // je sais pas comment le faire fonctionner faut demander a theo skuuuuuuuuuuuuuu
+		// rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	else if (signo == SIGQUIT)/* ctrl-\  */
+	else if (signo == SIGQUIT)
 	{
 		rl_on_new_line();
 		rl_redisplay();

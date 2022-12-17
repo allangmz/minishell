@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_pipe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 11:39:33 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 16:25:02 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 16:08:33 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,8 @@ void	ft_malloc_command(char ***tab_pipe, char *str)
 	(*tab_pipe)[j][command_count] = '\0';
 }
 
-void	ft_copy_gestion_pipe(char *str, char ***tab_pipe, int *command_count, int (*i)[2], char quote)
+void	ft_copy_gestion_pipe(char *str, char ***tab_pipe,
+							int *command_count, int (*i)[2], char quote)
 {
 	if (str[(*i)[0]] && str[(*i)[0]] == quote)
 	{
@@ -139,7 +140,8 @@ void	ft_copy_command(char ***tab_pipe, char *str)
 	{
 		ft_copy_gestion_pipe(str, tab_pipe, &command_count, &indice, '\'');
 		ft_copy_gestion_pipe(str, tab_pipe, &command_count, &indice, '\"');
-		if (str[indice[0]] && str[indice[0]] != '\'' && str[indice[0]] != '\"' && str[indice[0]] != '|')
+		if (str[indice[0]] && str[indice[0]] != '\''
+			&& str[indice[0]] != '\"' && str[indice[0]] != '|')
 		{
 			(*tab_pipe)[indice[1]][command_count] = str[indice[0]];
 			indice[0]++;
@@ -154,7 +156,7 @@ void	ft_copy_command(char ***tab_pipe, char *str)
 	}
 }
 
-char	**ft_split_pipe (char *str)
+char	**ft_split_pipe(char *str)
 {
 	char	**tab_pipe;
 	int		pipe_count;

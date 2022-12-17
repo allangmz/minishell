@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:40:27 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/14 17:47:25 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:13:53 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,9 @@ void	ft_add_variable_env(char ***env, char *str)
 		i++;
 	}
 	new_env[i] = ft_substr(str, 0, ft_strlen(str) + 1);
-	i++;
-	new_env[i] = NULL;
+	new_env[i + 1] = NULL;
 	ft_free_doublechar(env);
 	*env = new_env;
-	return ;
 }
 
 void	ft_change_variable_env(char ***env, int indice_var, char *str)
@@ -128,8 +126,8 @@ int	ft_export_variable_env(char ***env, char *str)
 	}
 	variable = ft_variable_extract(str);
 	if (variable == NULL)
-		return (-1); // message d'erreur ?
-	ft_verif_variable(variable); // verifier si contient que alphanum ou _
+		return (-1);
+	ft_verif_variable(variable);
 	indice_variable = ft_get_indice_variable(*env, variable);
 	if (indice_variable == -1)
 	{

@@ -6,20 +6,13 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/16 17:43:42 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 16:24:48 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "../Libft/libft.h"
-#include <sys/types.h>
 #include "minishell.h"
 
-//make a copy of src. if n = 0 copy all the src
+/*make a copy of src. if n = 0 copy all the src*/
 char	*ft_create_str_copy(char *src, int n)
 {
 	char	*copy;
@@ -38,8 +31,7 @@ char	*ft_create_str_copy(char *src, int n)
 	return (copy);
 }
 
-
-int exec_command(char **cmd, char ***env_copy)
+int	exec_command(char **cmd, char ***env_copy)
 {
 	if (ft_strcmp(cmd[0], "pwd") == 0)
 		ft_pwd();
@@ -51,7 +43,7 @@ int exec_command(char **cmd, char ***env_copy)
 		LAST_RETURN = ft_export_variable_env(env_copy, cmd[1]);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 		ft_unset_variable_env(env_copy, cmd[1]);
-	else if (ft_strcmp(cmd[0], "echo") == 0)	
+	else if (ft_strcmp(cmd[0], "echo") == 0)
 		ft_echo(cmd);
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 	{
@@ -72,37 +64,41 @@ int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
 
 	pipe(fd);
 	dup2(inputfd, STDIN_FILENO);
-	dup2(fd[1], STDOUT_FILENO);
-	if(redirections(cmd, env_copy) == -1)
-		return -4;
-	close(fd[1]);
 	close(inputfd);
+	dup2(fd[1], STDOUT_FILENO);
+	if (redirections(cmd, env_copy) == -1)
+		return (-4);
+	close(fd[1]);
 	return (fd[0]);
 }
 
 int	ft_pipe_last(char *cmd, int inputfd, char ***env_copy)
 {
 	usleep(10);
+	close(STDIN_FILENO);
 	dup2(inputfd, STDIN_FILENO);
+	usleep(2);
 	redirections(cmd, env_copy);
 	close(inputfd);
 	return (0);
 }
 
-void lire_pipe(int pipe_fd)
+void	lire_pipe(int pipe_fd)
 {
 	char	buffer[1024];
 	int		ret;
 
-	while ((ret = read(pipe_fd, buffer, 1023)) != 0)
+	ret = read(pipe_fd, buffer, 1023);
+	while (ret != 0)
 	{
 		buffer[ret] = 0;
+		ret = read(pipe_fd, buffer, 1023);
 	}
 }
 
 int	ft_isforbiden(char c)
 {
-	if (c == '>' || c == '<' || c == '|' || c == '(' || c ==')')
+	if (c == '>' || c == '<' || c == '|' || c == '(' || c == ')')
 		return (-1);
 	return (0);
 }
@@ -114,7 +110,6 @@ int	check_str2(char *str)
 	i = 0;
 	while (str[i])
 	{
-		//checkstr2
 		if (str[i] == '|')
 		{
 			i++;
@@ -172,7 +167,8 @@ int	check_str(char *str)
 		i++;
 	if (!str[i])
 		return (-1);
-	if (ft_isalnum(str[i]) == -1 && str[i] != '/' && str[i] != '\'' && str[i] != '\"' && str[i] != '.')
+	if (ft_isalnum(str[i]) == -1 && str[i] != '/'
+		&& str[i] != '\'' && str[i] != '\"' && str[i] != '.')
 	{
 		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
 		return (-1);
@@ -196,13 +192,6 @@ int	check_empty(char *str)
 	return (-1);
 }
 
-/*
-bugs :
-Minishell :	
-a faire : verifier les last return de execve
-
-*/
-
 void	your_name(char **tab_pipe, int fd, int saved_std[2], char ***env_copy)
 {
 	int		i;
@@ -219,7 +208,6 @@ void	your_name(char **tab_pipe, int fd, int saved_std[2], char ***env_copy)
 		}
 		else
 		{
-			// lire_pipe(fd);
 			dup2(saved_std[1], STDOUT_FILENO);
 			ft_pipe_last(tab_pipe[i], fd, env_copy);
 			close(fd);
@@ -236,7 +224,7 @@ void	no_name(char *str, char ***env_copy, int saved_std[2])
 
 	i = 0;
 	tab_pipe = ft_split_pipe(str);
-	fd = dup(1);
+	fd = STDIN_FILENO;
 	your_name(tab_pipe, fd, saved_std, env_copy);
 	close (fd);
 	if (tab_pipe)
@@ -260,7 +248,7 @@ int	ft_minishell(int saved_std[2], char ***env_copy)
 		add_history(str);
 		str = translate_variable(str, *env_copy);
 		if (check_str(str) == -1)
-			continue;
+			continue ;
 		no_name(str, env_copy, saved_std);
 		free(str);
 	}
@@ -271,7 +259,6 @@ int	main(int argc, char **argv, char **env)
 {
 	char	**env_copy;
 	int		last_return;
-	// char	*str;
 	int		saved_std[2];
 
 	(void) argc;
@@ -282,24 +269,5 @@ int	main(int argc, char **argv, char **env)
 	last_return = 0;
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);
-	// while (1)
-	// {
-	// 	str = readline("Minishell : ");
-	// 	if (!str)
-	// 		return (0);
-	// 	if (check_empty(str) == -1)
-	// 		continue ;
-	// 	usleep(20);
-	// 	add_history(str);
-	// 	str = translate_variable(str, env_copy);
-	// 	if (check_str(str) == -1)
-	// 		continue;
-	// 	no_name(str, &env_copy, saved_std);
-	// 	free(str);
-	// 	dup2(saved_std[0], STDIN_FILENO);
-	// }
 	return (ft_minishell(saved_std, &env_copy));
 }
-
-// rajouter des protection sur toute les fonctions + les retour pour $? de chaque fonction + verifier que tout soit free au bon moment
-			

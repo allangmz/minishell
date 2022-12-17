@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:37:43 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/13 19:48:22 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:19:55 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,12 @@ void	ft_unset_variable_env(char ***env, char *variable)
 
 	if (!variable)
 	{
-		// messafe d'erreur unset: not enough argument
+		printf("unset: not enough argument\n");
 		return ;
 	}
 	indice_variable = ft_get_indice_variable(*env, variable);
 	if (indice_variable == -1)
-	{
 		return ;
-	}
 	new_env = ft_copy_env_less_var(env, indice_variable);
 	ft_free_doublechar(env);
 	*env = new_env;

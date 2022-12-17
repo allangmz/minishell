@@ -6,7 +6,7 @@
 /*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 14:47:15 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/16 15:28:23 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:53:02 by aguemazi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,9 @@ char	*delete_until_the_end(int newsize, char *newstr, char *str)
 char	*delete_not_until_the_end(int newsize, char *newstr, char *str
 	, int limit[])
 {
-	int	i;
-	int	j;
+	int	indice[2];
 
-	i = 0;
-	j = 0;
+	indice[0] = 0;
 	newstr = malloc(sizeof(char) * newsize + 1);
 	if (!newstr)
 	{
@@ -48,19 +46,19 @@ char	*delete_not_until_the_end(int newsize, char *newstr, char *str
 		free(newstr);
 		return (NULL);
 	}
-	while (i < limit[0])
+	while (indice[0] < limit[0])
 	{
-		newstr[i] = str[i];
-		i++;
+		newstr[indice[0]] = str[indice[0]];
+		indice[0]++;
 	}
-	j = 0;
-	while (str[limit[1] + j] != '\0')
+	indice[1] = 0;
+	while (str[limit[1] + indice[1]] != '\0')
 	{
-		newstr[i] = str[limit[1] + j];
-		i++;
-		j++;
+		newstr[indice[0]] = str[limit[1] + indice[1]];
+		indice[0]++;
+		indice[1]++;
 	}
-	newstr[i] = '\0';
+	newstr[indice[0]] = '\0';
 	return (newstr);
 }		
 
@@ -91,6 +89,5 @@ char	*ft_delete_nchar(char **str, int begin, int n)
 	{
 		newstr = delete_not_until_the_end(size - n, newstr, *str, limit);
 	}
-	// free(*str); // pas alloué
 	return (newstr);
 }
