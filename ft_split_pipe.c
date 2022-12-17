@@ -3,53 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_pipe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 11:39:33 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 16:08:33 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:16:02 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_gestion_quote_count_pipe(char *str, int *i)
-{
-	if (str[*i] && str[*i] == '\'')
-	{
-		*i += 1;
-		while (str[*i] && str[*i] != '\'')
-		{
-			*i += 1;
-		}
-		*i += 1;
-	}
-	if (str[*i] && str[*i] == '\"')
-	{
-		*i += 1;
-		while (str[*i] && str[*i] != '\"')
-		{
-			*i += 1;
-		}
-		*i += 1;
-	}
-}
-
-int	ft_count_pipe(char *str)
-{
-	int		pipe_count;
-	int		i;
-
-	i = 0;
-	pipe_count = 1;
-	while (str[i])
-	{
-		ft_gestion_quote_count_pipe(str, &i);
-		if (str[i] && str[i] == '|')
-			pipe_count++;
-		i++;
-	}
-	return (pipe_count);
-}
 
 void	ft_gestion_quote_count(char *str, int *i, int *command_count)
 {

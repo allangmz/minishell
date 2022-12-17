@@ -3,33 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 16:55:11 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 18:52:09 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:22:27 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*make a copy of src. if n = 0 copy all the src*/
-char	*ft_create_str_copy(char *src, int n)
-{
-	char	*copy;
-	int		i;
-
-	if (n == 0)
-		n = ft_strlen(src);
-	copy = malloc(sizeof(char) * (n + 1));
-	i = 0;
-	while (i < n)
-	{
-		copy[i] = src[i];
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
-}
 
 int	exec_command(char **cmd, char ***env_copy)
 {
@@ -56,140 +37,6 @@ int	exec_command(char **cmd, char ***env_copy)
 		g_last_return = ft_exec_path(cmd, env_copy);
 	}
 	return (0);
-}
-
-int	ft_pipe(char *cmd, int inputfd, char ***env_copy)
-{
-	int		fd[2];
-
-	pipe(fd);
-	dup2(inputfd, STDIN_FILENO);
-	close(inputfd);
-	dup2(fd[1], STDOUT_FILENO);
-	if (redirections(cmd, env_copy) == -1)
-		return (-4);
-	close(fd[1]);
-	return (fd[0]);
-}
-
-int	ft_pipe_last(char *cmd, int inputfd, char ***env_copy)
-{
-	usleep(10);
-	close(STDIN_FILENO);
-	dup2(inputfd, STDIN_FILENO);
-	usleep(2);
-	redirections(cmd, env_copy);
-	close(inputfd);
-	return (0);
-}
-
-void	lire_pipe(int pipe_fd)
-{
-	char	buffer[1024];
-	int		ret;
-
-	ret = read(pipe_fd, buffer, 1023);
-	while (ret != 0)
-	{
-		buffer[ret] = 0;
-		ret = read(pipe_fd, buffer, 1023);
-	}
-}
-
-int	ft_isforbiden(char c)
-{
-	if (c == '>' || c == '<' || c == '|' || c == '(' || c == ')')
-		return (-1);
-	return (0);
-}
-
-int	check_str2(char *str)
-{
-	int		i;	
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '|')
-		{
-			i++;
-			while (ft_isalnum(str[i]) == -1)
-			{
-				if (str[i] == '|')
-				{
-					printf("Minishell : Parse error near \'|\'\n");
-					return (-1);
-				}
-				i++;
-			}
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	check_str3(char *str)
-{
-	int		i;
-	int		check;
-
-	i = 0;
-	check = 0;
-	if (str[i])
-	{
-		while (str[i] && ft_isforbiden(str[i]) == -1)
-			i++;
-		while (str[i])
-		{
-			if (ft_isforbiden(str[i]) == 0)
-				check = 1;
-			i++;
-		}
-		if (check == 0)
-			return (-1);
-	}
-	return (0);
-}
-
-int	check_str(char *str)
-{
-	int		i;
-
-	i = 0;
-	if (!str[i])
-	{
-		return (-1);
-	}
-	if (check_str2(str) == -1)
-		return (-1);
-	i = 0;
-	while (str[i] && str[i] == ' ')
-		i++;
-	if (!str[i])
-		return (-1);
-	if (ft_isalnum(str[i]) == -1 && str[i] != '/'
-		&& str[i] != '\'' && str[i] != '\"' && str[i] != '.')
-	{
-		printf("Minishell : syntax error near unexpected token \'%c\'\n", str[i]);
-		return (-1);
-	}
-	if (check_str3(str) == -1)
-		return (-1);
-	return (0);
-}
-
-int	check_empty(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ')
-			return (0);
-		i++;
-	}
-	return (-1);
 }
 
 void	your_name(char **tab_pipe, int fd, int saved_std[2], char ***env_copy)

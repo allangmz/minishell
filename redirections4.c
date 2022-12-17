@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   redirections4.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 10:23:55 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 20:24:33 by tkempf-e         ###   ########.fr       */
+/*   Created: 2022/12/17 20:31:58 by tkempf-e          #+#    #+#             */
+/*   Updated: 2022/12/17 20:32:19 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signals(int signo)
+static void	exits(t_redirection redirection, char *str, int saved_std[2])
 {
-	if (signo == SIGINT)
+	if (redirection.redirection == 2)
 	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		dup2(saved_std[1], STDOUT_FILENO);
+		exit_append_redirect(redirection.file, str);
 	}
-	else if (signo == SIGQUIT)
+	else if (redirection.redirection == 1)
 	{
-		rl_on_new_line();
-		rl_redisplay();
-		printf("  \b\b");
+		dup2(saved_std[1], STDOUT_FILENO);
+		exit_redirect(redirection.file);
 	}
 }

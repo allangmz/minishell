@@ -1,30 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   ft_translate_variable.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 10:23:55 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 20:24:33 by tkempf-e         ###   ########.fr       */
+/*   Created: 2022/12/17 20:05:22 by tkempf-e          #+#    #+#             */
+/*   Updated: 2022/12/17 20:05:41 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signals(int signo)
+// traduit les variables par leur traduction
+char	*translate_variable(char *str, char *env[])
 {
-	if (signo == SIGINT)
+	int		i;
+
+	i = 0;
+	while (str[i])
 	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		while (str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == ' '))
+			i++;
+		if (str[i] == '\0')
+			break ;
+		ft_gestion_double_quote(&str, &i, env);
+		ft_gestion_any_quote(&str, &i, env);
+		if (str[i] && str[i] == '\'')
+		{
+			i++;
+			while (str[i] && str[i] != '\'')
+				i++;
+			i++;
+		}
 	}
-	else if (signo == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-		printf("  \b\b");
-	}
+	return (str);
 }

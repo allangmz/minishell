@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 18:46:19 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 19:53:17 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <readline/history.h>
 # include <dirent.h>
 
-int g_last_return;
+int	g_last_return;
 
 typedef struct s_redirection
 {
@@ -42,7 +42,8 @@ char	*translate_variable(char *str, char *env[]);
 void	handle_signals(int signo);
 int		ft_exec_path(char **command_split, char **env[]);
 void	ft_free_doublechar(char ***tab);
-char	**ft_malloc_words_minishell(char *s, char **tab, size_t nbline, char sep);
+char	**ft_malloc_words_minishell(char *s, char **tab,
+			size_t nbline, char sep);
 char	**ft_split_minishell(char *s, char sep);
 char	*ft_add_str_in_str(char **s1, char *s2, int begin);
 char	*ft_delete_nchar(char **str, int begin, int n);
@@ -51,7 +52,7 @@ char	*ft_expand_string_variables(char **str, char *env[], size_t begin,
 char	*get_variable_in_env(char *env[], char *variable);
 char	*ft_expand_last_return(char **str, char *char_last_return, size_t begin,
 			size_t n);
-char	**ft_split_pipe (char *str);
+char	**ft_split_pipe(char *str);
 int		redirections(char *str, char ***envp);
 int		exec_command(char **cmd, char ***env_copy);
 // BULTIN

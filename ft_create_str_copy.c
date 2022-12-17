@@ -1,30 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   ft_create_str_copy.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 10:23:55 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 20:24:33 by tkempf-e         ###   ########.fr       */
+/*   Created: 2022/12/17 20:21:49 by tkempf-e          #+#    #+#             */
+/*   Updated: 2022/12/17 20:23:02 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signals(int signo)
+/*make a copy of src. if n = 0 copy all the src*/
+char	*ft_create_str_copy(char *src, int n)
 {
-	if (signo == SIGINT)
+	char	*copy;
+	int		i;
+
+	if (n == 0)
+		n = ft_strlen(src);
+	copy = malloc(sizeof(char) * (n + 1));
+	i = 0;
+	while (i < n)
 	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		copy[i] = src[i];
+		i++;
 	}
-	else if (signo == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-		printf("  \b\b");
-	}
+	copy[i] = '\0';
+	return (copy);
 }

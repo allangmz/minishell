@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:40:27 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 17:13:53 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:36:02 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	ft_add_variable_env(char ***env, char *str)
-{
-	char	**new_env;
-	int		i;
-	int		j;
-
-	i = 0;
-	while ((*env)[i])
-		i++;
-	new_env = malloc(sizeof(char *) * (i + 2));
-	i = 0;
-	while ((*env)[i])
-	{
-		new_env[i] = malloc(sizeof(char) * (ft_strlen((*env)[i]) + 1));
-		j = 0;
-		while ((*env)[i][j])
-		{
-			new_env[i][j] = (*env)[i][j];
-			j++;
-		}
-		new_env[i][j] = '\0';
-		i++;
-	}
-	new_env[i] = ft_substr(str, 0, ft_strlen(str) + 1);
-	new_env[i + 1] = NULL;
-	ft_free_doublechar(env);
-	*env = new_env;
-}
 
 void	ft_change_variable_env(char ***env, int indice_var, char *str)
 {
