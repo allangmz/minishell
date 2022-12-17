@@ -6,13 +6,13 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 20:31:58 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 20:32:19 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:50:48 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	exits(t_redirection redirection, char *str, int saved_std[2])
+void	exits(t_redirection redirection, char *str, int saved_std[2])
 {
 	if (redirection.redirection == 2)
 	{

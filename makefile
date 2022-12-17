@@ -1,12 +1,12 @@
 SRCS =	ft_path.c						ft_free_double_char.c	ft_get_indice_variable.c	main.c \
  		ft_expand_string_variables.c	ft_add_str_in_str.c		ft_delete_nchar.c \
-		ft_split_minishell.c 			signals.c  \
+		ft_split_minishell.c 			signals.c				builtins/ft_add_variable_env.c \
 		builtins/ft_echo.c				builtins/ft_unset.c		builtins/ft_export.c		builtins/ft_env.c \
 		builtins/ft_cd.c				builtins/ft_pwd.c \
 		ft_utils.c						ft_split_pipe.c			redirection.c				ft_search_path.c \
 		ft_split_minishell2.c			ft_split_minishell3.c	ft_translate_variable.c		pipe_utils.c \
 		ft_pipe.c						check_str.c				ft_create_str_copy.c		redirections2.c \
-		redirections_utils.c			redirections3.c			redirections4.c 			ft_add_variable_env.c\
+		redirections_utils.c			redirections3.c			redirections4.c	
 OBJS	=	$(SRCS:.c=.o)
 
 GCC		=	gcc

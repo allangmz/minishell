@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:12:59 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 20:05:44 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:53:59 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	ft_size_variable(char *str)
 	return (i);
 }
 
-static void	ft_replace_variable(char **str, int *i, char *env[])
+void	ft_replace_variable(char **str, int *i, char *env[])
 {
 	char	*char_last_return;
 
@@ -71,7 +71,7 @@ static void	ft_replace_variable(char **str, int *i, char *env[])
 	}
 }
 
-static void	ft_gestion_double_quote(char **str, int *i, char *env[])
+void	ft_gestion_double_quote(char **str, int *i, char *env[])
 {
 	if ((*str)[(*i)] && (*str)[(*i)] == '\"')
 	{	
@@ -90,7 +90,7 @@ static void	ft_gestion_double_quote(char **str, int *i, char *env[])
 	return ;
 }
 
-static void	ft_gestion_any_quote(char **str, int *i, char *env[])
+void	ft_gestion_any_quote(char **str, int *i, char *env[])
 {
 	while ((*str)[(*i)] && !(((*str)[(*i)] >= 9 && (*str)[(*i)] <= 13)
 		|| (((*str)[(*i)] >= 9 && (*str)[(*i)] <= 13)

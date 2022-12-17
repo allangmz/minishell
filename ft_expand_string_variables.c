@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_expand_string_variables.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 13:30:07 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 18:46:55 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:06:24 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,16 +106,4 @@ char	*ft_expand_last_return(char **str, char *char_last_return,
 			i++;
 	}
 	return (*str);
-}	
-
-// int main(int argc, char **argv, char *env[])
-// {
-// 	(void) argc;
-// 	(void) argv;
-// 	char *test1;
-// 	char *test =  "$PATH";
-// 	test1 = ft_expand_string_variables(test, env, 0, 23);
-// 	printf ("\n\nresultat %s\n\n",test1);
-// 	// free (test1);
-// 	system("leaks minishel");
-// }
+}

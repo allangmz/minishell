@@ -6,13 +6,13 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 11:39:33 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 20:16:02 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:49:07 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_gestion_quote_count(char *str, int *i, int *command_count)
+void	ft_gestion_quote_count2(char *str, int *i, int *command_count)
 {
 	if (str[*i] && str[*i] == '\'')
 	{
@@ -51,7 +51,7 @@ void	ft_malloc_command(char ***tab_pipe, char *str)
 	j = 0;
 	while (str[i])
 	{
-		ft_gestion_quote_count(str, &i, &command_count);
+		ft_gestion_quote_count2(str, &i, &command_count);
 		if (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
 		{
 			i++;

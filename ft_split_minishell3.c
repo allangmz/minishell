@@ -6,13 +6,13 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 20:03:00 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 20:04:16 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:52:58 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	gestion_quote_nbwords(char *s, size_t *i)
+void	gestion_quote_nbwords(char *s, size_t *i)
 {
 	if (s[*i] && s[*i] == '\"')
 	{
@@ -35,7 +35,7 @@ static void	gestion_quote_nbwords(char *s, size_t *i)
 	return ;
 }
 
-static int	ft_nbwords_minishell(char *s, char sep)
+int	ft_nbwords_minishell(char *s, char sep)
 {
 	size_t	i;
 	size_t	nbline;
@@ -76,7 +76,7 @@ void	ft_gestion_quote_malloc_words(char *s, size_t *compt,
 	}
 }
 
-static void	ft_gestion_quote_split(char *s, char ***tab,
+void	ft_gestion_quote_split(char *s, char ***tab,
 			size_t *i, size_t (*index)[2])
 {
 	if (s[*i] && s[*i] == '\"')
@@ -104,7 +104,7 @@ static void	ft_gestion_quote_split(char *s, char ***tab,
 	return ;
 }
 
-static void	ft_norminette_est_relou(char *s, size_t *i,
+void	ft_norminette_est_relou(char *s, size_t *i,
 	char ***tab, size_t (*index)[2])
 {
 	while (s[(*i)] && (((s[(*i)] >= 9 && s[(*i)] <= 13) || s[(*i)] == ' ')

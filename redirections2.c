@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 20:25:39 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 20:27:22 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:30:28 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,6 @@ int	redirection_counter(char *str)
 	}
 	return (counter);
 }
-
-// gerer les redirections multiples
-// return string without repetition of redirection
 
 void	exit_append_redirect(char *exit, char *cmd)
 {

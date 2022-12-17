@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 20:27:53 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 20:29:12 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 21:54:13 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	ft_pick_redirection(char *str)
 	return (redirection);
 }
 
-static void	ft_gestion_quote_count(char *str, int *i)
+void	ft_gestion_quote_count(char *str, int *i)
 {
 	if (str[*i] && str[*i] == '\'')
 	{
