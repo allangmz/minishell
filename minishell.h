@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 22:11:48 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 22:12:46 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,8 @@ void			no_name(char *str, char ***env_copy, int saved_std[2]);
 int				ft_minishell(int saved_std[2], char ***env_copy);
 
 //redirections
-// static void		opens(char *str, t_redirection	redirection, int saved_std[2]);
+// static void		opens(char *str, t_redirection	redirection,
+//int saved_std[2]);
 // static int		loop_redirection(char **str, int saved_std[2], int *i);
 void			redirect_options(char *str, char ***envp);
 char			*ft_cmd(char *str, int i);
