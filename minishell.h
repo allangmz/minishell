@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 13:59:13 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 21:56:36 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/17 22:11:48 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ int				redirection_checker(char *str);
 int				ft_isalnum(int c);
 int				ft_test(char *str, int i);
 int				ft_pick_redirection(char *str);
-// void			ft_gestion_quote_count(char *str, int *i);
+void			ft_gestion_quote_count(char *str, int *i);
 void			here_doc(char *cmd, char *delimiter);
 void			exit_redirect(char *exit);
 void			enter_redirect(char *entry, char *cmd);
