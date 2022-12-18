@@ -3,39 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguemazi <aguemazi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 10:37:43 by aguemazi          #+#    #+#             */
-/*   Updated: 2022/12/17 17:19:55 by aguemazi         ###   ########.fr       */
+/*   Updated: 2022/12/18 20:26:52 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_init(int *i, int *tmp)
+{
+	*i = 0;
+	*tmp = 0;
+}
 
 char	**ft_copy_env_less_var(char ***env, int indice_variable)
 {
 	char	**env_copy;
 	int		i;
 	int		j;
+	int		tmp;
 
 	i = 0;
 	while ((*env)[i])
 		i++;
 	env_copy = malloc(sizeof(char *) * (i));
-	i = 0;
-	while ((*env)[i])
+	ft_init(&i, &tmp);
+	while ((*env)[i + tmp])
 	{
-		if (i == indice_variable)
-			i++;
-		env_copy[i] = malloc(sizeof(char) * (ft_strlen((*env)[i]) + 1));
+		env_copy[i] = malloc(sizeof(char) * (ft_strlen((*env)[i + tmp]) + 1));
 		j = 0;
-		while ((*env)[i][j])
+		while (i != indice_variable && (*env)[i + tmp][j])
 		{
-			env_copy[i][j] = (*env)[i][j];
+			env_copy[i][j] = (*env)[i + tmp][j];
 			j++;
 		}
 		env_copy[i][j] = '\0';
-		i++;
+		if (++i == indice_variable)
+			tmp = 1;
 	}
 	env_copy[i] = NULL;
 	return (env_copy);

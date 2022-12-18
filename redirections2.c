@@ -6,7 +6,7 @@
 /*   By: tkempf-e <tkempf-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 20:25:39 by tkempf-e          #+#    #+#             */
-/*   Updated: 2022/12/17 21:30:28 by tkempf-e         ###   ########.fr       */
+/*   Updated: 2022/12/18 19:59:10 by tkempf-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	here_doc(char *cmd, char *delimiter)
 	{
 		dup2(1, STDOUT_FILENO);
 		line = readline("heredoc> ");
-		if (ft_strcmp(line, delimiter) == 0)
+		if (!line || ft_strcmp(line, delimiter) == 0)
 			break ;
 		dup2(fd, STDOUT_FILENO);
 		ft_putstr_fd(line, STDOUT_FILENO);
